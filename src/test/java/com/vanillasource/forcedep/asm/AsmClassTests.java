@@ -44,6 +44,14 @@ public class AsmClassTests {
       verify(method).call("com.vanillasource.forcedep.asm.A", "a");
    }
 
+   public void testConstructorInvocationIsFound() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).call("com.vanillasource.forcedep.asm.A", "<init>");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);

@@ -22,4 +22,8 @@ public final class B {
    public void b(A a) {
       a.a();
    }
+
+   public void c() {
+      new A();
+   }
 }
