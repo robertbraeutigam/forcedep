@@ -69,7 +69,7 @@ public final class AsmClass implements Objects {
       public MethodVisitor visitMethod(int callerAccess, String callerName, String callerDescription, String callerSignature, String[] callerExceptions) {
          return new MethodVisitor(Opcodes.ASM6) {
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {
-               dependencies.method(classFqn, callerName);
+               dependencies.method(classFqn, callerName).call(fqn(calleeOwner), calleeName);
             }
          };
       }

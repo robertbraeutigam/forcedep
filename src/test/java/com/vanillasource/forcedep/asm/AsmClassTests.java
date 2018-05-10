@@ -26,8 +26,9 @@ import org.testng.annotations.BeforeMethod;
 @Test
 public class AsmClassTests {
    private Dependencies dependencies;
+   private Dependencies.Method method;
 
-   public void testMethodInvocationIsFound() throws Exception {
+   public void testMethodIsFound() throws Exception {
       AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
 
       aClass.analyze(dependencies);
@@ -35,8 +36,18 @@ public class AsmClassTests {
       verify(dependencies).method("com.vanillasource.forcedep.asm.B", "b");
    }
 
+   public void testMethodInvocationIsFound() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).call("com.vanillasource.forcedep.asm.A", "a");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
+      method = mock(Dependencies.Method.class);
+      when(dependencies.method(anyString(), anyString())).thenReturn(method);
    }
 }
