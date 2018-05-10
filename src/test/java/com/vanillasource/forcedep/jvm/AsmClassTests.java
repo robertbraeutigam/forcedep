@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.vanillasource.forcedep.asm;
+package com.vanillasource.forcedep.jvm;
 
 import com.vanillasource.forcedep.Dependencies;
 import static org.mockito.Mockito.*;
@@ -29,27 +29,27 @@ public class AsmClassTests {
    private Dependencies.Method method;
 
    public void testMethodIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
 
       aClass.analyze(dependencies);
 
-      verify(dependencies).method("com.vanillasource.forcedep.asm.B", "b");
+      verify(dependencies).method("com.vanillasource.forcedep.jvm.B", "b");
    }
 
    public void testMethodInvocationIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
 
       aClass.analyze(dependencies);
 
-      verify(method).call("com.vanillasource.forcedep.asm.A", "a");
+      verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
    }
 
    public void testConstructorInvocationIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/asm/B.class"));
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
 
       aClass.analyze(dependencies);
 
-      verify(method).call("com.vanillasource.forcedep.asm.A", "<init>");
+      verify(method).call("com.vanillasource.forcedep.jvm.A", "<init>");
    }
 
    @BeforeMethod

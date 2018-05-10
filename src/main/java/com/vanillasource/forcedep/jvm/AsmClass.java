@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.vanillasource.forcedep.asm;
+package com.vanillasource.forcedep.jvm;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
