@@ -22,6 +22,8 @@ package com.vanillasource.forcedep;
  * Dependencies between a number of objects.
  */
 public interface Dependencies {
+   void object(String objectFqn, boolean iface);
+
    Method method(String objectFqn, String methodName);
 
    interface Method {

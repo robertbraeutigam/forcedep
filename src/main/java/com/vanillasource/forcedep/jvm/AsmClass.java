@@ -59,6 +59,7 @@ public final class AsmClass implements Objects {
       @Override
       public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
          this.classFqn = fqn(name);
+         dependencies.object(classFqn, (access&Opcodes.ACC_INTERFACE)!=0);
       }
 
       private static String fqn(String classloaderName) {

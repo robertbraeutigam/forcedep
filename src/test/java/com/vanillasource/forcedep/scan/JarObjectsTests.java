@@ -16,48 +16,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.vanillasource.forcedep.jvm;
+package com.vanillasource.forcedep.scan;
 
+import com.vanillasource.forcedep.jvm.AsmClass;
 import com.vanillasource.forcedep.Dependencies;
 import static org.mockito.Mockito.*;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
+import java.io.File;
 
 @Test
-public class AsmClassTests {
+public class JarObjectsTests {
    private Dependencies dependencies;
    private Dependencies.Method method;
 
-   public void testObjectIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
+   public void testAnalysisDetectsAllClasses() throws Exception {
+      JarObjects jarObjects = new JarObjects(
+            new File(getClass().getClassLoader().getResource("com/vanillasource/forcedep/scan/ab.jar").toURI()),
+            AsmClass::new);
 
-      aClass.analyze(dependencies);
+      jarObjects.analyze(dependencies);
 
+      verify(dependencies).object("com.vanillasource.forcedep.jvm.A", false);
       verify(dependencies).object("com.vanillasource.forcedep.jvm.B", false);
-   }
-
-   public void testMethodIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
-
-      aClass.analyze(dependencies);
-
-      verify(dependencies).method("com.vanillasource.forcedep.jvm.B", "b");
-   }
-
-   public void testMethodInvocationIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
-
-      aClass.analyze(dependencies);
-
-      verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
-   }
-
-   public void testConstructorInvocationIsFound() throws Exception {
-      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
-
-      aClass.analyze(dependencies);
-
-      verify(method).call("com.vanillasource.forcedep.jvm.A", "<init>");
    }
 
    @BeforeMethod
@@ -67,3 +48,4 @@ public class AsmClassTests {
       when(dependencies.method(anyString(), anyString())).thenReturn(method);
    }
 }
+
