@@ -61,6 +61,22 @@ public class AsmClassTests {
       verify(method).call("com.vanillasource.forcedep.jvm.A", "<init>");
    }
 
+   public void testInterfaceIsReadAsObject() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/C.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.C"), any());
+   }
+
+   public void testInterfaceMethodIsReadAsMethod() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/C.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(object).method("c");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);

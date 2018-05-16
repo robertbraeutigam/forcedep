@@ -29,11 +29,13 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.log4j.Logger;
 
 /**
  * A single class analyzed by the ASM library.
  */
 public final class AsmClass implements Objects {
+   private static final Logger LOGGER = Logger.getLogger(AsmClass.class);
    private final ClassReader classReader;
 
    public AsmClass(InputStream bytes) {
@@ -60,6 +62,7 @@ public final class AsmClass implements Objects {
 
       @Override
       public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+         LOGGER.debug("visiting class: "+name+", signature: "+signature);
          List<String> superObjectFqns = new ArrayList<>();
          if (superName != null) {
             superObjectFqns.add(fqn(superName));
@@ -76,9 +79,11 @@ public final class AsmClass implements Objects {
 
       @Override
       public MethodVisitor visitMethod(int callerAccess, String callerName, String callerDescription, String callerSignature, String[] callerExceptions) {
+         LOGGER.debug("visiting method: "+callerName+", signature: "+callerSignature);
+         Dependencies.Method method = object.method(callerName);
          return new MethodVisitor(Opcodes.ASM6) {
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {
-               object.method(callerName).call(fqn(calleeOwner), calleeName);
+               method.call(fqn(calleeOwner), calleeName);
             }
          };
       }
