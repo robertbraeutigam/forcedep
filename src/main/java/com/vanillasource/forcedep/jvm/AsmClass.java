@@ -27,6 +27,8 @@ import com.vanillasource.forcedep.Dependencies;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A single class analyzed by the ASM library.
@@ -49,7 +51,7 @@ public final class AsmClass implements Objects {
 
    private static class AsmClassVisitor extends ClassVisitor {
       private final Dependencies dependencies;
-      private String classFqn;
+      private Dependencies.Object object;
 
       public AsmClassVisitor(Dependencies dependencies) {
          super(Opcodes.ASM6);
@@ -58,8 +60,14 @@ public final class AsmClass implements Objects {
 
       @Override
       public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-         this.classFqn = fqn(name);
-         dependencies.object(classFqn, (access&Opcodes.ACC_INTERFACE)!=0);
+         List<String> superObjectFqns = new ArrayList<>();
+         if (superName != null) {
+            superObjectFqns.add(fqn(superName));
+         }
+         for (String interfaceName: interfaces) {
+            superObjectFqns.add(fqn(interfaceName));
+         }
+         this.object = dependencies.object(fqn(name), superObjectFqns.toArray(new String[] {}));
       }
 
       private static String fqn(String classloaderName) {
@@ -70,7 +78,7 @@ public final class AsmClass implements Objects {
       public MethodVisitor visitMethod(int callerAccess, String callerName, String callerDescription, String callerSignature, String[] callerExceptions) {
          return new MethodVisitor(Opcodes.ASM6) {
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {
-               dependencies.method(classFqn, callerName).call(fqn(calleeOwner), calleeName);
+               object.method(callerName).call(fqn(calleeOwner), calleeName);
             }
          };
       }

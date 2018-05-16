@@ -22,9 +22,11 @@ package com.vanillasource.forcedep;
  * Dependencies between a number of objects.
  */
 public interface Dependencies {
-   void object(String objectFqn, boolean iface);
+   Object object(String objectFqn, String... superObjectFqns);
 
-   Method method(String objectFqn, String methodName);
+   interface Object {
+      Method method(String methodName);
+   }
 
    interface Method {
       void call(String objectsFqn, String methodName);

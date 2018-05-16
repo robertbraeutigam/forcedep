@@ -26,6 +26,7 @@ import org.testng.annotations.BeforeMethod;
 @Test
 public class AsmClassTests {
    private Dependencies dependencies;
+   private Dependencies.Object object;
    private Dependencies.Method method;
 
    public void testObjectIsFound() throws Exception {
@@ -33,7 +34,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(dependencies).object("com.vanillasource.forcedep.jvm.B", false);
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), any());
    }
 
    public void testMethodIsFound() throws Exception {
@@ -41,7 +42,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(dependencies).method("com.vanillasource.forcedep.jvm.B", "b");
+      verify(object).method("b");
    }
 
    public void testMethodInvocationIsFound() throws Exception {
@@ -64,6 +65,8 @@ public class AsmClassTests {
    protected void setUp() {
       dependencies = mock(Dependencies.class);
       method = mock(Dependencies.Method.class);
-      when(dependencies.method(anyString(), anyString())).thenReturn(method);
+      object = mock(Dependencies.Object.class);
+      when(dependencies.object(anyString(), any())).thenReturn(object);
+      when(object.method(anyString())).thenReturn(method);
    }
 }

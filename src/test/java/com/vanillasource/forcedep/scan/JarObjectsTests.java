@@ -28,7 +28,6 @@ import java.io.File;
 @Test
 public class JarObjectsTests {
    private Dependencies dependencies;
-   private Dependencies.Method method;
 
    public void testAnalysisDetectsAllClasses() throws Exception {
       JarObjects jarObjects = new JarObjects(
@@ -37,15 +36,17 @@ public class JarObjectsTests {
 
       jarObjects.analyze(dependencies);
 
-      verify(dependencies).object("com.vanillasource.forcedep.jvm.A", false);
-      verify(dependencies).object("com.vanillasource.forcedep.jvm.B", false);
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.A"), any());
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), any());
    }
 
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
-      method = mock(Dependencies.Method.class);
-      when(dependencies.method(anyString(), anyString())).thenReturn(method);
+      Dependencies.Method method = mock(Dependencies.Method.class);
+      Dependencies.Object object = mock(Dependencies.Object.class);
+      when(dependencies.object(anyString(), any())).thenReturn(object);
+      when(object.method(anyString())).thenReturn(method);
    }
 }
 
