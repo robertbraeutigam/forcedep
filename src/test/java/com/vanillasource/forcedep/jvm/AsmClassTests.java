@@ -93,6 +93,23 @@ public class AsmClassTests {
       verify(object).method("c");
    }
 
+   public void testPrivateMethodsAreRead() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/D.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(object).method("d");
+      verify(object).method("e");
+   }
+
+   public void testPrivateMethodsCallsAreDetected() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/D.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
