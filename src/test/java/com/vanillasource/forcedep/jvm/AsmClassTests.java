@@ -37,6 +37,14 @@ public class AsmClassTests {
       verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), any());
    }
 
+   public void testObjectIsClosed() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(object).close();
+   }
+
    public void testMethodIsFound() throws Exception {
       AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
 
@@ -51,6 +59,14 @@ public class AsmClassTests {
       aClass.analyze(dependencies);
 
       verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
+   }
+
+   public void testMethodIsClosed() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/B.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method, times(3)).close(); // 3 methods, including ctor
    }
 
    public void testConstructorInvocationIsFound() throws Exception {

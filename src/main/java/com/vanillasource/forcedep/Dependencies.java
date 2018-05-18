@@ -24,13 +24,19 @@ package com.vanillasource.forcedep;
 public interface Dependencies {
    Object object(String objectFqn, String... superObjectFqns);
 
-   interface Object {
+   interface Object extends AutoCloseable {
       Method method(String methodName);
+
+      @Override
+      void close();
    }
 
-   interface Method {
+   interface Method extends AutoCloseable {
       void call(String objectsFqn, String methodName);
 
       void reference(String objectsFqn, String fieldName);
+
+      @Override
+      void close();
    }
 }
