@@ -22,6 +22,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Handle;
 import com.vanillasource.forcedep.Objects;
 import com.vanillasource.forcedep.Dependencies;
 import java.io.InputStream;
@@ -89,7 +90,17 @@ public final class AsmClass implements Objects {
          return new MethodVisitor(Opcodes.ASM6) {
             @Override
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {
+               LOGGER.debug("visiting call: "+calleeName+", owner: "+calleeOwner+", from method: "+callerName);
                method.call(fqn(calleeOwner), calleeName);
+            }
+
+            @Override
+            public void visitInvokeDynamicInsn(String name, String descriptor, Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+               if (bootstrapMethodHandle.getName().equals("metafactory")) {
+                  Handle handle = (Handle) bootstrapMethodArguments[1];
+                  LOGGER.debug("visiting lambda call: "+handle.getName()+", owner: "+handle.getOwner());
+                  method.call(fqn(handle.getOwner()), handle.getName());
+               }
             }
 
             @Override

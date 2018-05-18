@@ -110,6 +110,14 @@ public class AsmClassTests {
       verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
    }
 
+   public void testLambdaCallsAreDetected() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/E.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
