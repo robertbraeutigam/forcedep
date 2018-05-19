@@ -57,6 +57,7 @@ public final class D3Dependencies implements Dependencies {
          public Dependencies.Method method(String methodName) {
             JsonObject jsonMethod = new JsonObject();
             jsonMethod.add("id", methodId(objectFqn, methodName));
+            jsonMethod.add("class", objectFqn);
             jsonMethod.add("name", methodName);
             nodes.add(jsonMethod);
             return new Dependencies.Method() {
