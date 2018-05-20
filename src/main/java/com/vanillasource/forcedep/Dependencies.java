@@ -21,8 +21,11 @@ package com.vanillasource.forcedep;
 /**
  * Dependencies between a number of objects.
  */
-public interface Dependencies {
+public interface Dependencies extends AutoCloseable {
    Object object(String objectFqn, String... superObjectFqns);
+
+   @Override
+   void close();
 
    interface Object extends AutoCloseable {
       Method method(String methodName);

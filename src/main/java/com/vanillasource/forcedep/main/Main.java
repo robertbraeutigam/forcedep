@@ -51,13 +51,12 @@ public final class Main {
             .map(file -> new JarObjects(file, AsmClass::new))
             .collect(Collectors.toList()));
 
-      D3Dependencies d3Dependencies = new D3Dependencies();
-      Dependencies dependencies = new OverrideDependencies(
-            new ExistingObjectsDependencies(d3Dependencies));
-
-      objects.analyze(dependencies);
-
-      d3Dependencies.writeTo(new File(outputFileName));
+      try (Dependencies dependencies =
+            new OverrideDependencies(
+               new ExistingObjectsDependencies(
+                  new D3Dependencies(new File(outputFileName))))) {
+         objects.analyze(dependencies);
+      }
    }
 
    public static void main(String[] args) throws Exception {

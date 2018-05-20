@@ -35,6 +35,11 @@ public final class ExistingObjectsDependencies implements Dependencies {
    }
 
    @Override
+   public void close() {
+      delegate.close();
+   }
+
+   @Override
    public Dependencies.Object object(String objectFqn, String... superObjectFqns) {
       return new Dependencies.Object() {
          private final Dependencies.Object object = delegate.object(objectFqn, superObjectFqns);

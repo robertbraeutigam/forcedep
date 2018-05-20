@@ -24,10 +24,10 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.WriterConfig;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.JtwigModel;
-import java.io.OutputStream;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 /**
  * Saves dependencies directly to a D3 graph.
@@ -35,19 +35,25 @@ import java.io.FileOutputStream;
 public final class D3Dependencies implements Dependencies {
    private final JsonArray nodes = new JsonArray();
    private final JsonArray links = new JsonArray();
+   private final File outputFile;
 
-   public void writeTo(File file) throws IOException {
-      try (FileOutputStream output = new FileOutputStream(file)) {
-         writeTo(output);
-      }
+   public D3Dependencies(File outputFile) {
+      this.outputFile = outputFile;
    }
 
-   public void writeTo(OutputStream output) {
-      JtwigTemplate template = JtwigTemplate.classpathTemplate("/com/vanillasource/forcedep/d3/force-template.html");
-      JtwigModel model = JtwigModel.newModel()
-         .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
-         .with("links", links.toString(WriterConfig.PRETTY_PRINT));
-      template.render(model, output);
+   @Override
+   public void close() {
+      try {
+         try (FileOutputStream output = new FileOutputStream(outputFile)) {
+            JtwigTemplate template = JtwigTemplate.classpathTemplate("/com/vanillasource/forcedep/d3/force-template.html");
+            JtwigModel model = JtwigModel.newModel()
+               .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
+               .with("links", links.toString(WriterConfig.PRETTY_PRINT));
+            template.render(model, output);
+         }
+      } catch (IOException e) {
+         throw new UncheckedIOException(e);
+      }
    }
 
    @Override

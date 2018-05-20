@@ -38,6 +38,11 @@ public final class OverrideDependencies implements Dependencies {
    }
 
    @Override
+   public void close() {
+      delegate.close();
+   }
+
+   @Override
    public Dependencies.Object object(String objectFqn, String... superObjectFqns) {
       return new AnalyzedObject() {
          private final Dependencies.Object object = delegate.object(objectFqn, superObjectFqns);
