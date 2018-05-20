@@ -74,6 +74,14 @@ public final class AsmClass implements Objects {
          this.object = dependencies.object(fqn(name), superObjectFqns.toArray(new String[] {}));
       }
 
+      public void visitInnerClass(String name, String outerName, String innerName, int access) {
+         LOGGER.debug("visiting inner class: "+name+", outer name: "+outerName+", inner name: "+innerName);
+      }
+
+      public void visitOuterClass(String owner, String name, String descriptor) {
+         LOGGER.debug("visiting outer class: "+name+", owner: "+owner);
+      }
+
       private static String fqn(String classloaderName) {
          return classloaderName.replaceAll("/", ".");
       }

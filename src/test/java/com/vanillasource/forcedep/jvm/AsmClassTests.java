@@ -118,12 +118,20 @@ public class AsmClassTests {
       verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
    }
 
+   public void testAnonymousInnerClassCallsAreDetected() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/F$1.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).call(eq("com.vanillasource.forcedep.jvm.F"), any());
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
       method = mock(Dependencies.Method.class);
       object = mock(Dependencies.Object.class);
-      when(dependencies.object(anyString(), any())).thenReturn(object);
+      when(dependencies.object(anyString(), anyVararg())).thenReturn(object);
       when(object.method(anyString(), anyBoolean())).thenReturn(method);
    }
 }
