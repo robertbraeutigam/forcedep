@@ -45,9 +45,9 @@ public final class ExistingObjectsDependencies implements Dependencies {
          private final Dependencies.Object object = delegate.object(objectFqn, superObjectFqns);
 
          @Override
-         public Dependencies.Method method(String methodName) {
+         public Dependencies.Method method(String methodName, boolean local) {
             Dependencies.Method method = new Dependencies.Method() {
-               private final Dependencies.Method method = object.method(methodName);
+               private final Dependencies.Method method = object.method(methodName, local);
 
                @Override
                public void call(String objectsFqn, String methodName) {

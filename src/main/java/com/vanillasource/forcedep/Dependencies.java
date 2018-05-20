@@ -28,7 +28,7 @@ public interface Dependencies extends AutoCloseable {
    void close();
 
    interface Object extends AutoCloseable {
-      Method method(String methodName);
+      Method method(String methodName, boolean local);
 
       @Override
       void close();

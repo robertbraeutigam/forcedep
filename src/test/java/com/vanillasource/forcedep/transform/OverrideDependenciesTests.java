@@ -39,15 +39,15 @@ public class OverrideDependenciesTests {
    public void testMethodsAreDelegated() {
       dependencies
          .object("a.B", new String[] {})
-         .method("c");
+         .method("c", false);
 
-      verify(delegateObject).method("c");
+      verify(delegateObject).method("c", false);
    }
 
    public void testMethodCallsAreDelegated() {
       dependencies
          .object("a.B", new String[] {})
-         .method("c")
+         .method("c", false)
          .call("d.E", "f");
 
       verify(delegateMethod).call("d.E", "f");
@@ -55,10 +55,10 @@ public class OverrideDependenciesTests {
 
    public void testSimpleOverrideWithOverridingFirstTranslatesToCall() {
       Dependencies.Object o1 = dependencies.object("a.B", new String[] { "a.C" });
-      o1.method("b");
+      o1.method("b", false);
       o1.close();
       Dependencies.Object o2 = dependencies.object("a.C", new String[] {});
-      o2.method("b");
+      o2.method("b", false);
       o2.close();
 
       verify(delegateMethod).call("a.C", "b");
@@ -66,10 +66,10 @@ public class OverrideDependenciesTests {
 
    public void testSimpleOverrideWithOverriddenFirstTranslatesToCall() {
       Dependencies.Object o2 = dependencies.object("a.C", new String[] {});
-      o2.method("b");
+      o2.method("b", false);
       o2.close();
       Dependencies.Object o1 = dependencies.object("a.B", new String[] { "a.C" });
-      o1.method("b");
+      o1.method("b", false);
       o1.close();
 
       verify(delegateMethod).call("a.C", "b");
@@ -77,12 +77,12 @@ public class OverrideDependenciesTests {
 
    public void testTransitiveOverrideWithOverridingFirstTranslatesToCall() {
       Dependencies.Object o1 = dependencies.object("a.B", new String[] { "a.C" });
-      o1.method("b");
+      o1.method("b", false);
       o1.close();
       Dependencies.Object o2 = dependencies.object("a.C", new String[] { "a.D" });
       o2.close();
       Dependencies.Object o3 = dependencies.object("a.D", new String[] { });
-      o3.method("b");
+      o3.method("b", false);
       o3.close();
 
       verify(delegateMethod).call("a.D", "b");
@@ -94,7 +94,7 @@ public class OverrideDependenciesTests {
       delegateObject = mock(Dependencies.Object.class);
       when(delegate.object(anyString(), anyVararg())).thenReturn(delegateObject);
       delegateMethod = mock(Dependencies.Method.class);
-      when(delegateObject.method(anyString())).thenReturn(delegateMethod);
+      when(delegateObject.method(anyString(), anyBoolean())).thenReturn(delegateMethod);
       dependencies = new OverrideDependencies(delegate);
    }
 }

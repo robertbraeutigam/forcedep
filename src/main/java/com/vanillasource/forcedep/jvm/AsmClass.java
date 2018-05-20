@@ -86,7 +86,7 @@ public final class AsmClass implements Objects {
       @Override
       public MethodVisitor visitMethod(int callerAccess, String callerName, String callerDescription, String callerSignature, String[] callerExceptions) {
          LOGGER.debug("visiting method: "+callerName+", signature: "+callerSignature);
-         Dependencies.Method method = object.method(callerName);
+         Dependencies.Method method = object.method(callerName, (callerAccess&Opcodes.ACC_PRIVATE)!=0);
          return new MethodVisitor(Opcodes.ASM6) {
             @Override
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {

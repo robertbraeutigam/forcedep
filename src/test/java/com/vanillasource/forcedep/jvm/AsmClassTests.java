@@ -50,7 +50,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(object).method("b");
+      verify(object).method("b", false);
    }
 
    public void testMethodInvocationIsFound() throws Exception {
@@ -90,7 +90,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(object).method("c");
+      verify(object).method("c", false);
    }
 
    public void testPrivateMethodsAreRead() throws Exception {
@@ -98,8 +98,8 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(object).method("d");
-      verify(object).method("e");
+      verify(object).method("d", false);
+      verify(object).method("e", true);
    }
 
    public void testPrivateMethodsCallsAreDetected() throws Exception {
@@ -124,6 +124,6 @@ public class AsmClassTests {
       method = mock(Dependencies.Method.class);
       object = mock(Dependencies.Object.class);
       when(dependencies.object(anyString(), any())).thenReturn(object);
-      when(object.method(anyString())).thenReturn(method);
+      when(object.method(anyString(), anyBoolean())).thenReturn(method);
    }
 }

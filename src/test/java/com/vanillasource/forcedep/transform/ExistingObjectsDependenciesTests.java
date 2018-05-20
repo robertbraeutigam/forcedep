@@ -39,15 +39,15 @@ public class ExistingObjectsDependenciesTests {
    public void testMethodsAreDelegated() {
       dependencies
          .object("a.B", new String[] {})
-         .method("c");
+         .method("c", false);
 
-      verify(delegateObject).method("c");
+      verify(delegateObject).method("c", false);
    }
 
    public void testMethodCallsAreNotDelegatedImmediately() {
       dependencies
          .object("a.B", new String[] {})
-         .method("c")
+         .method("c", false)
          .call("d.E", "f");
 
       verify(delegateMethod, never()).call("d.E", "f");
@@ -56,7 +56,7 @@ public class ExistingObjectsDependenciesTests {
    public void testMethodCallsAreDelegatedAsSoonAsCalleeIsAnalyzed() {
       dependencies
          .object("a.B", new String[] {})
-         .method("c")
+         .method("c", false)
          .call("d.E", "f");
 
       dependencies
@@ -73,7 +73,7 @@ public class ExistingObjectsDependenciesTests {
 
       dependencies
          .object("a.B", new String[] {})
-         .method("c")
+         .method("c", false)
          .call("d.E", "f");
 
       verify(delegateMethod).call("d.E", "f");
@@ -85,7 +85,7 @@ public class ExistingObjectsDependenciesTests {
       delegateObject = mock(Dependencies.Object.class);
       when(delegate.object(anyString(), anyVararg())).thenReturn(delegateObject);
       delegateMethod = mock(Dependencies.Method.class);
-      when(delegateObject.method(anyString())).thenReturn(delegateMethod);
+      when(delegateObject.method(anyString(), anyBoolean())).thenReturn(delegateMethod);
       dependencies = new ExistingObjectsDependencies(delegate);
    }
 }

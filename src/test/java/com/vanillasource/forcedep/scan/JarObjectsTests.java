@@ -46,7 +46,7 @@ public class JarObjectsTests {
       Dependencies.Method method = mock(Dependencies.Method.class);
       Dependencies.Object object = mock(Dependencies.Object.class);
       when(dependencies.object(anyString(), any())).thenReturn(object);
-      when(object.method(anyString())).thenReturn(method);
+      when(object.method(anyString(), anyBoolean())).thenReturn(method);
    }
 }
 

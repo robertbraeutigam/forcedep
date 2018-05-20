@@ -60,7 +60,7 @@ public final class D3Dependencies implements Dependencies {
    public Dependencies.Object object(String objectFqn, String... superObjectFqns) {
       return new Dependencies.Object() {
          @Override
-         public Dependencies.Method method(String methodName) {
+         public Dependencies.Method method(String methodName, boolean local) {
             JsonObject jsonMethod = new JsonObject();
             jsonMethod.add("id", methodId(objectFqn, methodName));
             jsonMethod.add("class", objectFqn);
