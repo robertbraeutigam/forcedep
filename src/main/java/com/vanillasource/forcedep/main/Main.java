@@ -31,6 +31,7 @@ import com.vanillasource.forcedep.scan.AggregateObjects;
 import com.vanillasource.forcedep.transform.ExistingObjectsDependencies;
 import com.vanillasource.forcedep.transform.OverrideDependencies;
 import com.vanillasource.forcedep.transform.MergedPrivateMethodsDependencies;
+import com.vanillasource.forcedep.transform.MergedAnonymousClassesDependencies;
 import com.vanillasource.forcedep.d3.D3Dependencies;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,8 +56,9 @@ public final class Main {
       try (Dependencies dependencies =
             new OverrideDependencies(
                new ExistingObjectsDependencies(
-                  new MergedPrivateMethodsDependencies(
-                     new D3Dependencies(new File(outputFileName)))))) {
+                  new MergedAnonymousClassesDependencies(
+                     new MergedPrivateMethodsDependencies(
+                        new D3Dependencies(new File(outputFileName))))))) {
          objects.analyze(dependencies);
       }
    }
