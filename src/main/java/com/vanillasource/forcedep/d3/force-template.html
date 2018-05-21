@@ -4,7 +4,9 @@
 
 .links line {
   stroke: #999;
+  stroke-width: 1;
   stroke-opacity: 0.6;
+  marker-end: url(#arrowhead);
 }
 
 .nodes circle {
@@ -25,6 +27,19 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
+svg.append("svg:defs").selectAll("marker")
+	.data(["arrowhead"])
+	.enter().append("svg:marker")
+		.attr("id", String)
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", 15)
+		.attr("refY", -1.5)
+		.attr("markerWidth", 6)
+		.attr("markerHeight", 6)
+		.attr("orient", "auto")
+	.append("svg:path")
+	.attr("d", "M0,-5L10,0L0,5");
+
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var simulation = d3.forceSimulation()
@@ -34,10 +49,9 @@ var simulation = d3.forceSimulation()
 
 var link = svg.append("g")
 	.attr("class", "links")
- .selectAll("line")
- .data(links)
- .enter().append("line")
-	.attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+   .selectAll("line")
+	.data(links)
+		.enter().append("line")
 
 var node = svg.append("g")
 	.attr("class", "nodes")
@@ -45,7 +59,7 @@ var node = svg.append("g")
  .data(nodes)
  .enter().append("circle")
 	.attr("r", 5)
-	.attr("fill", function(d) { return color(d.class); })
+	.attr("fill", function(d) { return color(d.ownerclass); })
 	.call(d3.drag()
 		 .on("start", dragstarted)
 		 .on("drag", dragged)
