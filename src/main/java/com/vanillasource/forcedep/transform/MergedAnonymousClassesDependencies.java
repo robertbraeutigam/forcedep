@@ -68,7 +68,11 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
                   if (calledMethodName.equals("<init>")) {
                      localObjectInstantiations.computeIfAbsent(objectFqn, k -> new ArrayList<>()).add(calledObjectFqn);
                   } else {
-                     localObjectDependencies.add(m -> m.call(calledObjectFqn, calledMethodName));
+                     localObjectDependencies.add(m -> {
+                        if (!localObjects.containsKey(calledObjectFqn)) {
+                           m.call(calledObjectFqn, calledMethodName);
+                        }
+                     });
                   }
                }
 
@@ -105,7 +109,11 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
                   if (calledMethodName.equals("<init>")) {
                      instantiations.add(calledObjectFqn);
                   } else {
-                     dependencies.add(m -> m.call(calledObjectFqn, calledMethodName));
+                     dependencies.add(m -> {
+                        if (!localObjects.containsKey(calledObjectFqn)) {
+                           m.call(calledObjectFqn, calledMethodName);
+                        }
+                     });
                   }
                }
 
