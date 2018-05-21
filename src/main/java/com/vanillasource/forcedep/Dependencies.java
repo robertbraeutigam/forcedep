@@ -22,12 +22,22 @@ package com.vanillasource.forcedep;
  * Dependencies between a number of objects.
  */
 public interface Dependencies extends AutoCloseable {
-   Object object(String objectFqn, String... superObjectFqns);
+   /**
+    * @param local Object is only locally usable inside another object. May mean
+    * it is an anonymous inner class, defined in a specific method, or a private class
+    * only instantiated inside an outer class.
+    */
+   Object object(String objectFqn, boolean local, String... superObjectFqns);
 
    @Override
    void close();
 
    interface Object extends AutoCloseable {
+      /**
+       * @param local If the method is only locally callable in this object. May mean it is
+       * private, or may mean that some other checks determined that it can not
+       * be called elsewhere.
+       */
       Method method(String methodName, boolean local);
 
       @Override

@@ -54,7 +54,10 @@ public final class AsmClass implements Objects {
 
    private static class AsmClassVisitor extends ClassVisitor {
       private final Dependencies dependencies;
-      private Dependencies.Object object;
+      private String objectFqn;
+      private String[] superObjectFqns;
+      private boolean anonymous = false;
+      private Dependencies.Object cachedObject;
 
       public AsmClassVisitor(Dependencies dependencies) {
          super(Opcodes.ASM6);
@@ -71,11 +74,22 @@ public final class AsmClass implements Objects {
          for (String interfaceName: interfaces) {
             superObjectFqns.add(fqn(interfaceName));
          }
-         this.object = dependencies.object(fqn(name), superObjectFqns.toArray(new String[] {}));
+         this.objectFqn = fqn(name);
+         this.superObjectFqns = superObjectFqns.toArray(new String[] {});
+      }
+
+      private Dependencies.Object object() {
+         if (cachedObject == null) {
+            this.cachedObject = dependencies.object(objectFqn, anonymous, superObjectFqns);
+         }
+         return cachedObject;
       }
 
       public void visitInnerClass(String name, String outerName, String innerName, int access) {
          LOGGER.debug("visiting inner class: "+name+", outer name: "+outerName+", inner name: "+innerName);
+         if (fqn(name).equals(objectFqn) && innerName == null) {
+            anonymous = true;
+         }
       }
 
       public void visitOuterClass(String owner, String name, String descriptor) {
@@ -88,13 +102,13 @@ public final class AsmClass implements Objects {
 
       @Override
       public void visitEnd() {
-         object.close();
+         object().close();
       }
 
       @Override
       public MethodVisitor visitMethod(int callerAccess, String callerName, String callerDescription, String callerSignature, String[] callerExceptions) {
          LOGGER.debug("visiting method: "+callerName+", signature: "+callerSignature);
-         Dependencies.Method method = object.method(callerName, (callerAccess&Opcodes.ACC_PRIVATE)!=0);
+         Dependencies.Method method = object().method(callerName, (callerAccess&Opcodes.ACC_PRIVATE)!=0);
          return new MethodVisitor(Opcodes.ASM6) {
             @Override
             public void visitMethodInsn(int calleeOpcode, String calleeOwner, String calleeName, String calleeDescriptor, boolean calleeIsInterface) {

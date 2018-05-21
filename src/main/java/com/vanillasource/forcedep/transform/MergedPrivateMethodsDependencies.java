@@ -43,9 +43,9 @@ public final class MergedPrivateMethodsDependencies implements Dependencies {
    }
 
    @Override
-   public Dependencies.Object object(String objectFqn, String... superObjectFqns) {
+   public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
       return new Dependencies.Object() {
-         private final Dependencies.Object object = delegate.object(objectFqn, superObjectFqns);
+         private final Dependencies.Object object = delegate.object(objectFqn, local, superObjectFqns);
          private final Map<String, List<Consumer<Dependencies.Method>>> externalDependencies = new HashMap<>();
          private final Map<String, List<String>> localCalls = new HashMap<>();
          private final Set<String> localMethods = new HashSet<>();

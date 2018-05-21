@@ -34,7 +34,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), any());
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), anyBoolean(), anyVararg());
    }
 
    public void testObjectIsClosed() throws Exception {
@@ -82,7 +82,7 @@ public class AsmClassTests {
 
       aClass.analyze(dependencies);
 
-      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.C"), any());
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.C"), anyBoolean(), anyVararg());
    }
 
    public void testInterfaceMethodIsReadAsMethod() throws Exception {
@@ -118,6 +118,14 @@ public class AsmClassTests {
       verify(method).call("com.vanillasource.forcedep.jvm.A", "a");
    }
 
+   public void testAnonymousInnerClassIsLocalObject() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/F$1.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.F$1"), eq(true), anyVararg());
+   }
+
    public void testAnonymousInnerClassCallsAreDetected() throws Exception {
       AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/F$1.class"));
 
@@ -131,7 +139,7 @@ public class AsmClassTests {
       dependencies = mock(Dependencies.class);
       method = mock(Dependencies.Method.class);
       object = mock(Dependencies.Object.class);
-      when(dependencies.object(anyString(), anyVararg())).thenReturn(object);
+      when(dependencies.object(anyString(), anyBoolean(), anyVararg())).thenReturn(object);
       when(object.method(anyString(), anyBoolean())).thenReturn(method);
    }
 }

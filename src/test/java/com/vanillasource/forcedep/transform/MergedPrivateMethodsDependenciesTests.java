@@ -31,13 +31,13 @@ public class MergedPrivateMethodsDependenciesTests {
    private MergedPrivateMethodsDependencies dependencies;
 
    public void testObjectsIsDelegated() {
-      dependencies.object("a.B", new String[] {}).close();
+      dependencies.object("a.B", false, new String[] {}).close();
 
-      verify(delegate).object("a.B", new String[] {});
+      verify(delegate).object("a.B", false, new String[] {});
    }
 
    public void testMethodsAreDelegated() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("c", false);
       object.close();
 
@@ -45,7 +45,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testMethodCallsAreDelegated() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("c", false).call("d.E", "f");
       object.close();
 
@@ -53,7 +53,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testPrivateMethodsAreNotDelegated() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("c", true);
       object.close();
 
@@ -61,7 +61,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testMethodsCalledFromPrivateMethodMergedIntoCallerLocalFirst() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("d", true).call("d.E", "f");
       object.method("c", false).call("a.B", "d");
       object.close();
@@ -70,7 +70,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testMethodsCalledFromPrivateMethodMergedIntoCallerPublicFirst() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("c", false).call("a.B", "d");
       object.method("d", true).call("d.E", "f");
       object.close();
@@ -79,7 +79,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testDoesNotIncludeLocalCallsToLocalMethods() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("d", true).call("d.E", "f");
       object.method("c", false).call("a.B", "d");
       object.close();
@@ -88,7 +88,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testIncludesLocalMethodCallsBetweenPublicMethods() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("d", false);
       object.method("c", false).call("a.B", "d");
       object.close();
@@ -97,7 +97,7 @@ public class MergedPrivateMethodsDependenciesTests {
    }
 
    public void testMethodsCalledFromPrivateMethodChainIsFlattened() {
-      Dependencies.Object object = dependencies.object("a.B", new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
       object.method("c", false).call("a.B", "d");
       object.method("d", true).call("a.B", "f");
       object.method("f", true).call("a.B", "g");
@@ -114,7 +114,7 @@ public class MergedPrivateMethodsDependenciesTests {
    protected void setUp() {
       delegate = mock(Dependencies.class);
       delegateObject = mock(Dependencies.Object.class);
-      when(delegate.object(anyString(), anyVararg())).thenReturn(delegateObject);
+      when(delegate.object(anyString(), anyBoolean(), anyVararg())).thenReturn(delegateObject);
       delegateMethod = mock(Dependencies.Method.class);
       when(delegateObject.method(anyString(), anyBoolean())).thenReturn(delegateMethod);
       dependencies = new MergedPrivateMethodsDependencies(delegate);

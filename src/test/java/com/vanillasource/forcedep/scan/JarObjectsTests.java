@@ -36,8 +36,8 @@ public class JarObjectsTests {
 
       jarObjects.analyze(dependencies);
 
-      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.A"), any());
-      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), any());
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.A"), anyBoolean(), anyVararg());
+      verify(dependencies).object(eq("com.vanillasource.forcedep.jvm.B"), anyBoolean(), anyVararg());
    }
 
    @BeforeMethod
@@ -45,7 +45,7 @@ public class JarObjectsTests {
       dependencies = mock(Dependencies.class);
       Dependencies.Method method = mock(Dependencies.Method.class);
       Dependencies.Object object = mock(Dependencies.Object.class);
-      when(dependencies.object(anyString(), any())).thenReturn(object);
+      when(dependencies.object(anyString(), anyBoolean(), anyVararg())).thenReturn(object);
       when(object.method(anyString(), anyBoolean())).thenReturn(method);
    }
 }
