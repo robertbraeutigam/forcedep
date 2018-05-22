@@ -10,7 +10,6 @@
 }
 
 .nodes circle {
-  stroke: #fff;
   stroke-width: 1.5px;
 }
 
@@ -59,7 +58,8 @@ var node = svg.append("g")
  .data(nodes)
  .enter().append("circle")
 	.attr("r", 5)
-	.attr("fill", function(d) { return color(d.ownerclass); })
+	.attr("stroke", function(d) { return color(d.ownerclass); })
+   .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } })
 	.call(d3.drag()
 		 .on("start", dragstarted)
 		 .on("drag", dragged)
