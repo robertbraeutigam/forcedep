@@ -40,6 +40,8 @@ public interface Dependencies extends AutoCloseable {
        */
       Method method(String methodName, boolean local);
 
+      void field(String fieldName);
+
       @Override
       void close();
    }

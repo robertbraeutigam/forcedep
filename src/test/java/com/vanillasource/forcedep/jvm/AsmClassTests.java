@@ -134,6 +134,22 @@ public class AsmClassTests {
       verify(method).call(eq("com.vanillasource.forcedep.jvm.F"), any());
    }
 
+   public void testFieldsAreDetected() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/G.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(object).field("var");
+   }
+
+   public void testFieldAccessIsDetected() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/G.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(method).reference("com.vanillasource.forcedep.jvm.G", "var");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);

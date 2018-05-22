@@ -78,7 +78,11 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
 
                @Override
                public void reference(String referencedObjectsFqn, String referencedFieldName) {
-                  localObjectDependencies.add(m -> m.reference(referencedObjectsFqn, referencedFieldName));
+                  localObjectDependencies.add(m -> {
+                     if (!localObjects.containsKey(referencedObjectsFqn)) {
+                        m.reference(referencedObjectsFqn, referencedFieldName);
+                     }
+                  });
                }
 
                @Override
@@ -89,6 +93,11 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
          }
 
          @Override
+         public void field(String fieldName) {
+            // Fields of local objects do not matter
+         }
+
+         @Override
          public void close() {
          }
       };
@@ -96,7 +105,7 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
 
    private Dependencies.Object topObject(String objectFqn, String... superObjectFqns) {
       return new Dependencies.Object() {
-         private final List<Consumer<Dependencies.Object>> methods = new ArrayList<>();
+         private final List<Consumer<Dependencies.Object>> members = new ArrayList<>();
 
          @Override
          public Dependencies.Method method(String methodName, boolean local) {
@@ -119,12 +128,16 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
 
                @Override
                public void reference(String referencedObjectsFqn, String referencedFieldName) {
-                  dependencies.add(m -> m.reference(referencedObjectsFqn, referencedFieldName));
+                  dependencies.add(m -> {
+                     if (!localObjects.containsKey(referencedObjectsFqn)) {
+                        m.reference(referencedObjectsFqn, referencedFieldName);
+                     }
+                  });
                }
 
                @Override
                public void close() {
-                  methods.add(object -> {
+                  members.add(object -> {
                      try (Dependencies.Method m = object.method(methodName, local)) {
                         dependencies.forEach(d -> d.accept(m));
                         instantiations
@@ -152,10 +165,15 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
          }
 
          @Override
+         public void field(String fieldName) {
+            members.add(object -> object.field(fieldName));
+         }
+
+         @Override
          public void close() {
             topObjects.add(() -> {
                try (Dependencies.Object object = delegate.object(objectFqn, false, superObjectFqns)) {
-                  methods.forEach(m -> m.accept(object));
+                  members.forEach(m -> m.accept(object));
                }
             });
          }

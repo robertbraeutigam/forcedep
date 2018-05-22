@@ -70,6 +70,11 @@ public final class ExistingObjectsDependencies implements Dependencies {
          }
 
          @Override
+         public void field(String fieldName) {
+            object.field(fieldName);
+         }
+
+         @Override
          public void close() {
             object.close();
             analyzedObjectFor(objectFqn).complete(null);

@@ -20,8 +20,10 @@ package com.vanillasource.forcedep.jvm;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Handle;
 import com.vanillasource.forcedep.Objects;
 import com.vanillasource.forcedep.Dependencies;
@@ -85,6 +87,7 @@ public final class AsmClass implements Objects {
          return cachedObject;
       }
 
+      @Override
       public void visitInnerClass(String name, String outerName, String innerName, int access) {
          LOGGER.debug("visiting inner class: "+name+", outer name: "+outerName+", inner name: "+innerName);
          if (fqn(name).equals(objectFqn) && innerName == null) {
@@ -92,8 +95,16 @@ public final class AsmClass implements Objects {
          }
       }
 
+      @Override
       public void visitOuterClass(String owner, String name, String descriptor) {
          LOGGER.debug("visiting outer class: "+name+", owner: "+owner);
+      }
+
+      @Override
+      public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+         LOGGER.debug("visiting field: "+name);
+         object().field(name);
+         return null;
       }
 
       private static String fqn(String classloaderName) {
@@ -123,6 +134,12 @@ public final class AsmClass implements Objects {
                   LOGGER.debug("visiting lambda call: "+handle.getName()+", owner: "+handle.getOwner());
                   method.call(fqn(handle.getOwner()), handle.getName());
                }
+            }
+
+            @Override
+            public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
+               LOGGER.debug("visit field access: "+name+", owner: "+owner);
+               method.reference(fqn(owner), name);
             }
 
             @Override

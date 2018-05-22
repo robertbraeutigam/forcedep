@@ -85,6 +85,11 @@ public final class OverrideDependencies implements Dependencies {
          }
 
          @Override
+         public void field(String fieldName) {
+            object.field(fieldName);
+         }
+
+         @Override
          public void close() {
             object.close();
             analyzedObjectFor(objectFqn).complete(this);

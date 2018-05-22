@@ -79,6 +79,11 @@ public final class MergedPrivateMethodsDependencies implements Dependencies {
          }
 
          @Override
+         public void field(String fieldName) {
+            object.field(fieldName);
+         }
+
+         @Override
          public void close() {
             for (String methodName: externalDependencies.keySet()) {
                if (!localMethods.contains(methodName)) {

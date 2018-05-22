@@ -63,12 +63,9 @@ public final class D3Dependencies implements Dependencies {
          public Dependencies.Method method(String methodName, boolean local) {
             JsonObject jsonMethod = new JsonObject();
             jsonMethod.add("id", methodId(objectFqn, methodName));
+            jsonMethod.add("type", "method");
             jsonMethod.add("class", objectFqn);
-            if (objectFqn.contains("$")) {
-               jsonMethod.add("ownerclass", objectFqn.substring(0, objectFqn.indexOf('$')));
-            } else {
-               jsonMethod.add("ownerclass", objectFqn);
-            }
+            jsonMethod.add("ownerclass", ownerClass());
             jsonMethod.add("name", methodName);
             nodes.add(jsonMethod);
             return new Dependencies.Method() {
@@ -81,14 +78,35 @@ public final class D3Dependencies implements Dependencies {
                }
 
                @Override
-               public void reference(String objectsFqn, String fieldName) {
-                  // TODO
+               public void reference(String referenceObjectFqn, String referenceFieldName) {
+                  JsonObject jsonReference = new JsonObject();
+                  jsonReference.add("source", methodId(objectFqn, methodName));
+                  jsonReference.add("target", fieldId(referenceObjectFqn, referenceFieldName));
+                  links.add(jsonReference);
                }
 
                @Override
                public void close() {
                }
             };
+         }
+
+         @Override
+         public void field(String fieldName) {
+            JsonObject jsonField = new JsonObject();
+            jsonField.add("id", fieldId(objectFqn, fieldName));
+            jsonField.add("type", "field");
+            jsonField.add("name", fieldName);
+            jsonField.add("ownerclass", ownerClass());
+            nodes.add(jsonField);
+         }
+
+         private String ownerClass() {
+            if (objectFqn.contains("$")) {
+               return objectFqn.substring(0, objectFqn.indexOf('$'));
+            } else {
+               return objectFqn;
+            }
          }
 
          @Override
@@ -99,6 +117,10 @@ public final class D3Dependencies implements Dependencies {
 
    private static String methodId(String objectFqn, String methodName) {
       return objectFqn+"."+methodName+"()";
+   }
+
+   private static String fieldId(String objectFqn, String fieldName) {
+      return objectFqn+"."+fieldName;
    }
 }
 
