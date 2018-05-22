@@ -84,8 +84,8 @@
               .attr("y2", function(d) { return d.target.y; });
 
           node
-              .attr("cx", function(d) { return d.x; })
-              .attr("cy", function(d) { return d.y; });
+             .attr("cx", function(d) { return d.x = Math.max(6, Math.min(width - 6, d.x)); })
+             .attr("cy", function(d) { return d.y = Math.max(6, Math.min(height - 6, d.y)); });
          }
 
          function dragstarted(d) {
