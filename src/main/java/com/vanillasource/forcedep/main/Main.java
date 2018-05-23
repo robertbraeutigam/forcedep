@@ -38,12 +38,14 @@ import java.util.stream.Collectors;
 import java.io.File;
 
 public final class Main {
+   private final String analysisName;
    private final String outputFileName;
    private final List<String> inputFileNames;
 
-   public Main(String outputFileName, List<String> inputFileNames) {
+   public Main(String analysisName, String outputFileName, List<String> inputFileNames) {
       this.outputFileName = outputFileName;
       this.inputFileNames = inputFileNames;
+      this.analysisName = analysisName;
    }
 
    public void run() throws Exception {
@@ -58,7 +60,7 @@ public final class Main {
                new ExistingObjectsDependencies(
                   new MergedAnonymousClassesDependencies(
                      new MergedPrivateMethodsDependencies(
-                        new D3Dependencies(new File(outputFileName))))))) {
+                        new D3Dependencies(analysisName, new File(outputFileName))))))) {
          objects.analyze(dependencies);
       }
    }
@@ -66,8 +68,20 @@ public final class Main {
    public static void main(String[] args) throws Exception {
       Options options = new Options();
       options.addOption(Option.builder("o").longOpt("output").hasArg().argName("FILENAME").desc("The output file to write resulting HTML into").build());
+      options.addOption(Option.builder("n").longOpt("name").hasArg().argName("NAME").desc("The analysis name reported on resulting HTML").build());
       CommandLineParser parser = new DefaultParser();
       CommandLine cmdLine = parser.parse(options, args);
-      new Main(cmdLine.getOptionValue('o', "output.html"), cmdLine.getArgList()).run();
+      new Main(
+            cmdLine.getOptionValue('n', generateAnalysisName(cmdLine.getArgList())),
+            cmdLine.getOptionValue('o', "output.html"),
+            cmdLine.getArgList())
+         .run();
+   }
+
+   private static String generateAnalysisName(List<String> inputFileNames) {
+      return inputFileNames.stream()
+         .map(File::new)
+         .map(File::getName)
+         .collect(Collectors.joining(", "));
    }
 }

@@ -35,9 +35,11 @@ import java.io.UncheckedIOException;
 public final class D3Dependencies implements Dependencies {
    private final JsonArray nodes = new JsonArray();
    private final JsonArray links = new JsonArray();
+   private final String analysisName;
    private final File outputFile;
 
-   public D3Dependencies(File outputFile) {
+   public D3Dependencies(String analysisName, File outputFile) {
+      this.analysisName = analysisName;
       this.outputFile = outputFile;
    }
 
@@ -47,6 +49,7 @@ public final class D3Dependencies implements Dependencies {
          try (FileOutputStream output = new FileOutputStream(outputFile)) {
             JtwigTemplate template = JtwigTemplate.classpathTemplate("/com/vanillasource/forcedep/d3/force-template.html");
             JtwigModel model = JtwigModel.newModel()
+               .with("analysisName", analysisName)
                .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
                .with("links", links.toString(WriterConfig.PRETTY_PRINT));
             template.render(model, output);
