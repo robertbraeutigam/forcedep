@@ -13,10 +13,20 @@
          .nodes circle {
            stroke-width: 1.5px;
          }
+
+         svg {
+            border: 1px solid black;
+         }
       </style>
    </head>
    <body>
-      <svg width="960" height="600"></svg>
+      <svg width="960" height="600">
+         <defs>
+            <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
+               <path d="M0,-5L10,0L0,5"></path>
+            </marker>
+         </defs>
+      </svg>
       <script src="https://d3js.org/d3.v4.min.js"></script>
       <script>
          var nodes = {{ nodes }};
@@ -26,19 +36,6 @@
          var svg = d3.select("svg"),
              width = +svg.attr("width"),
              height = +svg.attr("height");
-
-         svg.append("svg:defs").selectAll("marker")
-            .data(["arrowhead"])
-            .enter().append("svg:marker")
-               .attr("id", String)
-               .attr("viewBox", "0 -5 10 10")
-               .attr("refX", 21)
-               .attr("refY", 0)
-               .attr("markerWidth", 5)
-               .attr("markerHeight", 5)
-               .attr("orient", "auto")
-            .append("svg:path")
-            .attr("d", "M0,-5L10,0L0,5");
 
          var color = d3.scaleOrdinal(d3.schemeCategory20);
 
