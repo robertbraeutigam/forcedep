@@ -54,4 +54,31 @@ public interface Dependencies extends AutoCloseable {
       @Override
       void close();
    }
+
+   Dependencies.Object NULL_OBJECT = new Object() {
+      @Override
+      public Dependencies.Method method(String methodName, boolean local) {
+         return new Dependencies.Method() {
+            @Override
+            public void call(String objectsFqn, String methodName) {
+            }
+
+            @Override
+            public void reference(String objectsFqn, String fieldName) {
+            }
+
+            @Override
+            public void close() {
+            }
+         };
+      }
+
+      @Override
+      public void field(String fieldName) {
+      }
+
+      @Override
+      public void close() {
+      }
+   };
 }
