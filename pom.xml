@@ -138,6 +138,8 @@
                <arguments>
                   <argument>-o</argument>
                   <argument>target/output.html</argument>
+                  <argument>-b</argument>
+                  <argument>.*\.Main</argument>
                   <argument>target/${project.build.finalName}.jar</argument>
                </arguments>
             </configuration>

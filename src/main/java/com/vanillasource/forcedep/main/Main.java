@@ -32,8 +32,10 @@ import com.vanillasource.forcedep.transform.ExistingObjectsDependencies;
 import com.vanillasource.forcedep.transform.OverrideDependencies;
 import com.vanillasource.forcedep.transform.MergedPrivateMethodsDependencies;
 import com.vanillasource.forcedep.transform.MergedAnonymousClassesDependencies;
+import com.vanillasource.forcedep.transform.FilteredDependencies;
 import com.vanillasource.forcedep.d3.D3Dependencies;
 import java.util.List;
+import static java.util.Arrays.asList;
 import java.util.stream.Collectors;
 import java.io.File;
 
@@ -41,11 +43,15 @@ public final class Main {
    private final String analysisName;
    private final String outputFileName;
    private final List<String> inputFileNames;
+   private final List<String> whitelist;
+   private final List<String> blacklist;
 
-   public Main(String analysisName, String outputFileName, List<String> inputFileNames) {
+   public Main(String analysisName, String outputFileName, List<String> inputFileNames, List<String> whitelist, List<String> blacklist) {
       this.outputFileName = outputFileName;
       this.inputFileNames = inputFileNames;
       this.analysisName = analysisName;
+      this.whitelist = whitelist;
+      this.blacklist = blacklist;
    }
 
    public void run() throws Exception {
@@ -56,11 +62,12 @@ public final class Main {
             .collect(Collectors.toList()));
 
       try (Dependencies dependencies =
-            new OverrideDependencies(
-               new ExistingObjectsDependencies(
-                  new MergedAnonymousClassesDependencies(
-                     new MergedPrivateMethodsDependencies(
-                        new D3Dependencies(analysisName, new File(outputFileName))))))) {
+            new FilteredDependencies(whitelist, blacklist,
+               new OverrideDependencies(
+                  new ExistingObjectsDependencies(
+                     new MergedAnonymousClassesDependencies(
+                        new MergedPrivateMethodsDependencies(
+                           new D3Dependencies(analysisName, new File(outputFileName)))))))) {
          objects.analyze(dependencies);
       }
    }
@@ -69,12 +76,16 @@ public final class Main {
       Options options = new Options();
       options.addOption(Option.builder("o").longOpt("output").hasArg().argName("FILENAME").desc("The output file to write resulting HTML into").build());
       options.addOption(Option.builder("n").longOpt("name").hasArg().argName("NAME").desc("The analysis name reported on resulting HTML").build());
+      options.addOption(Option.builder("w").longOpt("whitelist").hasArg().argName("REGEXP").desc("Whitelist to filter object FQNs").build());
+      options.addOption(Option.builder("b").longOpt("blacklist").hasArg().argName("REGEXP").desc("Blacklist to filter object FQNs").build());
       CommandLineParser parser = new DefaultParser();
       CommandLine cmdLine = parser.parse(options, args);
       new Main(
             cmdLine.getOptionValue('n', generateAnalysisName(cmdLine.getArgList())),
             cmdLine.getOptionValue('o', "output.html"),
-            cmdLine.getArgList())
+            cmdLine.getArgList(),
+            cmdLine.getOptionValues('w')==null?asList(".*"):asList(cmdLine.getOptionValues('w')),
+            cmdLine.getOptionValues('b')==null?asList():asList(cmdLine.getOptionValues('b')))
          .run();
    }
 
