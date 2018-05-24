@@ -2,6 +2,7 @@
 <html>
    <head>
       <meta charset="utf-8"/>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
       <style>
          .links line {
            stroke: #999;
@@ -14,19 +15,47 @@
            stroke-width: 1.5px;
          }
 
-         svg {
+			svg {
 				border: 1px solid black;
-			}
+				display: block;
+			}    
+
+			div.analysis {
+				display: inline-block;
+			}    
+
+			div.dashboard {
+            display: none;
+				border: 1px solid black;
+				background: black;
+				height: 32px;
+            color: white;
+            font-size: 18px;
+            text-align: left;
+            padding-left: 10px;
+            padding-top: 5px;
+			}    
+
+         div.analysis:hover div.dashboard {
+            display: block;
+         }    
       </style>
    </head>
    <body>
-      <svg width="960" height="600">
-         <defs>
-            <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
-               <path d="M0,-5L10,0L0,5"></path>
-            </marker>
-         </defs>
-      </svg>
+		<center>
+			<div class="analysis">
+				<svg width="1024" height="768">
+					<defs>
+					<marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
+					<path d="M0,-5L10,0L0,5"></path>
+					</marker>
+					</defs>
+				</svg>
+				<div class="dashboard">
+               <i class="fas fa-pause"></i>
+				</div>
+			</div>
+		</center>
       <script src="https://d3js.org/d3.v4.min.js"></script>
       <script>
          var nodes = {{ nodes }};
