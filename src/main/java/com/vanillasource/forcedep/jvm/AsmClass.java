@@ -23,7 +23,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Handle;
 import com.vanillasource.forcedep.Objects;
 import com.vanillasource.forcedep.Dependencies;
@@ -32,6 +31,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import org.apache.log4j.Logger;
 
 /**
@@ -60,6 +61,7 @@ public final class AsmClass implements Objects {
       private String[] superObjectFqns;
       private boolean anonymous = false;
       private Dependencies.Object cachedObject;
+      private Set<String> fields = new HashSet<>();
 
       public AsmClassVisitor(Dependencies dependencies) {
          super(Opcodes.ASM6);
@@ -103,7 +105,10 @@ public final class AsmClass implements Objects {
       @Override
       public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
          LOGGER.debug("visiting field: "+name);
-         object().field(name);
+         if (!fields.contains(name)) {
+            fields.add(name);
+            object().field(name);
+         }
          return null;
       }
 
@@ -138,8 +143,14 @@ public final class AsmClass implements Objects {
 
             @Override
             public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-               LOGGER.debug("visit field access: "+name+", owner: "+owner);
+               LOGGER.debug("visit field access: "+name+", owner: "+owner+", descriptor: "+descriptor);
                method.reference(fqn(owner), name);
+               if (fqn(owner).equals(objectFqn) && !fields.contains(name)) {
+                  // Owner of fields sometimes is the current object, not superclass, 
+                  // so make these fields seem like part of this object too
+                  fields.add(name);
+                  object().field(name);
+               }
             }
 
             @Override

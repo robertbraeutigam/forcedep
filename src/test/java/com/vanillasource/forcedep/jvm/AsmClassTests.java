@@ -150,6 +150,15 @@ public class AsmClassTests {
       verify(method).reference("com.vanillasource.forcedep.jvm.G", "var");
    }
 
+   public void testInheritedConstantsAreDetectedAsPartOfCurrentClass() throws Exception {
+      AsmClass aClass = new AsmClass(getClass().getClassLoader().getResourceAsStream("com/vanillasource/forcedep/jvm/H.class"));
+
+      aClass.analyze(dependencies);
+
+      verify(object).field("EMPTY_HI");
+      verify(method).reference("com.vanillasource.forcedep.jvm.H", "EMPTY_HI");
+   }
+
    @BeforeMethod
    protected void setUp() {
       dependencies = mock(Dependencies.class);
