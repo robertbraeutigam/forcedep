@@ -22,6 +22,7 @@
 
 			div.analysis {
 				display: inline-block;
+            position: relative;
 			}    
 
          div.dashboard {
@@ -34,6 +35,16 @@
             font-size: 18px;
             text-align: left;
          }
+
+			div.title {
+				position: absolute;
+				right: 0px;
+				top: 0px;
+				padding: 10px;
+				font-size: 26px;
+				font-weight: bold;
+				opacity: 0.2;
+			}
 
          div.analysis:hover div.dashboard {
             display: block;
@@ -57,7 +68,10 @@
                   <path d="M0,-5L10,0L0,5"></path>
                   </marker>
 					</defs>
-				</svg>
+            </svg>
+            <div class="title">
+               <span class="name">{{ analysisName }}</span>
+            </div>
 				<div class="dashboard">
                <i id="buttonPlayPause" class="button fas fa-pause" onclick="clickPlayPause(this)"></i><i id="buttonReset" class="button fas fa-sync-alt" onclick="initSimulation()"></i>
 				</div>
