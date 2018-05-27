@@ -53,13 +53,14 @@
 			<div class="analysis">
 				<svg width="1024" height="768">
 					<defs>
-					<marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
-					<path d="M0,-5L10,0L0,5"></path>
-					</marker>
+                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
+                  <path d="M0,-5L10,0L0,5"></path>
+                  </marker>
 					</defs>
 				</svg>
 				<div class="dashboard">
                <i id="buttonPlayPause" class="button fas fa-pause" onclick="clickPlayPause(this)"></i>
+               <i id="buttonReset" class="button fas fa-sync-alt" onclick="initSimulation()"></i>
 				</div>
 			</div>
 		</center>
@@ -75,41 +76,55 @@
             width = +svg.attr("width"),
             height = +svg.attr("height");
 
-         var color = d3.scaleOrdinal(d3.schemeCategory20);
+         var simulation = null,
+             link = null,
+             node = null;
 
-         var simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function(d) { return d.id; }))
-            .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(width / 2, height / 2));
+         var initSimulation = function() {
+            if (simulation) {
+               simulation.stop();
+            }
+            svg.selectAll('g').remove();
+            nodes.forEach(function (n) { n.x=null; n.y=null; });
 
-         var link = svg.append("g")
-            .attr("class", "links")
-            .selectAll("line")
-            .data(links)
-               .enter().append("line")
+            var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-         var node = svg.append("g")
-            .attr("class", "nodes")
-            .selectAll("circle")
-            .data(nodes)
-            .enter().append("circle")
-               .attr("r", 5)
-               .attr("stroke", function(d) { return color(d.ownerclass); })
-               .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } })
-               .call(d3.drag()
-                  .on("start", dragstarted)
-                  .on("drag", dragged)
-                  .on("end", dragended));
+            simulation = d3.forceSimulation()
+               .force("link", d3.forceLink().id(function(d) { return d.id; }))
+               .force("charge", d3.forceManyBody())
+               .force("center", d3.forceCenter(width / 2, height / 2));
 
-         node.append("title")
-            .text(function(d) { return d.id; });
+            link = svg.append("g")
+               .attr("class", "links")
+               .selectAll("line")
+               .data(links)
+                  .enter().append("line")
 
-         simulation
-            .nodes(nodes)
-            .on("tick", ticked);
+            node = svg.append("g")
+               .attr("class", "nodes")
+               .selectAll("circle")
+               .data(nodes)
+               .enter().append("circle")
+                  .attr("r", 5)
+                  .attr("stroke", function(d) { return color(d.ownerclass); })
+                  .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } })
+                  .call(d3.drag()
+                     .on("start", dragstarted)
+                     .on("drag", dragged)
+                     .on("end", dragended));
 
-         simulation.force("link")
-            .links(links);
+            node.append("title")
+               .text(function(d) { return d.id; });
+
+            simulation
+               .nodes(nodes)
+               .on("tick", ticked);
+
+            simulation.force("link")
+               .links(links);
+         }
+
+         initSimulation();
 
          function ticked() {
             link
