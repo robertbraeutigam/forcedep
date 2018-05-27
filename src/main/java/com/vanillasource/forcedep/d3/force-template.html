@@ -24,22 +24,28 @@
 				display: inline-block;
 			}    
 
-			div.dashboard {
-				display: none;
-				position: relative;
-				top: -35px;
-				background: rgba(0,0,0,0.4);  
-				height: 30px;
-				color: white;
-				font-size: 18px;
-				text-align: left;
-				padding-left: 10px;
-				padding-top: 5px; 
-			}    
+         div.dashboard {
+            display: none;
+            position: relative;
+            top: -35px;
+            background: rgba(0,0,0,0.4);
+            height: 35px;
+            color: white;
+            font-size: 18px;
+            text-align: left;
+         }
 
          div.analysis:hover div.dashboard {
             display: block;
-         }    
+         }
+
+         .button {
+            padding: 8px; 
+         }
+
+         .button:hover {
+            background: black;
+         }
       </style>
    </head>
    <body>
@@ -53,7 +59,7 @@
 					</defs>
 				</svg>
 				<div class="dashboard">
-               <i id="buttonPlayPause" class="fas fa-pause" onclick="clickPlayPause(this)"></i>
+               <i id="buttonPlayPause" class="button fas fa-pause" onclick="clickPlayPause(this)"></i>
 				</div>
 			</div>
 		</center>
@@ -138,11 +144,11 @@
             if (active) {
                active = 0;
                simulation.stop();
-               b.className = "fas fa-play";
+               b.className = "button fas fa-play";
             } else {
                active = 1;
                simulation.restart();
-               b.className = "fas fa-pause";
+               b.className = "button fas fa-pause";
             }
          }
 
