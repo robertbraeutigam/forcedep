@@ -44,11 +44,22 @@
 				font-size: 26px;
 				font-weight: bold;
 				opacity: 0.2;
+            z-index: -1;
 			}
 
          div.analysis:hover div.dashboard {
             display: block;
          }
+
+         .noselect {
+           -webkit-touch-callout: none !important; /* iOS Safari */
+             -webkit-user-select: none !important; /* Safari */
+              -khtml-user-select: none !important; /* Konqueror HTML */
+                -moz-user-select: none !important; /* Firefox */
+                 -ms-user-select: none !important; /* Internet Explorer/Edge */
+                     user-select: none !important; /* Non-prefixed version, currently
+                                           supported by Chrome and Opera */
+         }    
 
          .button {
             padding: 8px; 
@@ -70,7 +81,7 @@
 					</defs>
             </svg>
             <div class="title">
-               <span class="name">{{ analysisName }}</span>
+               <span class="noselect name">{{ analysisName }}</span>
             </div>
 				<div class="dashboard">
                <i id="buttonPlayPause" class="button fas fa-pause" onclick="clickPlayPause(this)"></i><i id="buttonReset" class="button fas fa-sync-alt" onclick="initSimulation()"></i>
