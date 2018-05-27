@@ -37,6 +37,9 @@ public final class D3Dependencies implements Dependencies {
    private final JsonArray links = new JsonArray();
    private final String analysisName;
    private final File outputFile;
+   private int classCount = 0;
+   private int methodCount = 0;
+   private int fieldCount = 0;
 
    public D3Dependencies(String analysisName, File outputFile) {
       this.analysisName = analysisName;
@@ -50,6 +53,7 @@ public final class D3Dependencies implements Dependencies {
             JtwigTemplate template = JtwigTemplate.classpathTemplate("/com/vanillasource/forcedep/d3/force-template.html");
             JtwigModel model = JtwigModel.newModel()
                .with("analysisName", analysisName)
+               .with("analysisStatistics", String.format("Classes: %d, Methods %d, Fields: %d", classCount, methodCount, fieldCount))
                .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
                .with("links", links.toString(WriterConfig.PRETTY_PRINT));
             template.render(model, output);
@@ -61,9 +65,11 @@ public final class D3Dependencies implements Dependencies {
 
    @Override
    public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
+      classCount++;
       return new Dependencies.Object() {
          @Override
          public Dependencies.Method method(String methodName, boolean local) {
+            methodCount++;
             JsonObject jsonMethod = new JsonObject();
             jsonMethod.add("id", methodId(objectFqn, methodName));
             jsonMethod.add("type", "method");
@@ -96,6 +102,7 @@ public final class D3Dependencies implements Dependencies {
 
          @Override
          public void field(String fieldName) {
+            fieldCount++;
             JsonObject jsonField = new JsonObject();
             jsonField.add("id", fieldId(objectFqn, fieldName));
             jsonField.add("type", "field");
