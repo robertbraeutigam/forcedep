@@ -53,7 +53,7 @@
 					</defs>
 				</svg>
 				<div class="dashboard">
-               <i class="fas fa-pause"></i>
+               <i id="buttonPlayPause" class="fas fa-pause" onclick="clickPlayPause(this)"></i>
 				</div>
 			</div>
 		</center>
@@ -62,6 +62,8 @@
          var nodes = {{ nodes }};
 
          var links = {{ links }};
+
+         var active = 1;
 
          var svg = d3.select("svg"),
             width = +svg.attr("width"),
@@ -130,6 +132,27 @@
             if (!d3.event.active) simulation.alphaTarget(0);
             d.fx = null;
             d.fy = null;
+         }
+
+         function clickPlayPause(b) {
+            if (active) {
+               active = 0;
+               simulation.stop();
+               b.className = "fas fa-play";
+            } else {
+               active = 1;
+               simulation.restart();
+               b.className = "fas fa-pause";
+            }
+         }
+
+         document.onkeydown = function (e) {
+            e = e || window.event;
+            switch (e.which || e.keyCode) {
+               case 13:
+                  document.getElementById("buttonPlayPause").click();
+                  break;
+            }
          }
       </script>
    </body>
