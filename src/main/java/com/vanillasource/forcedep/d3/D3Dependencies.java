@@ -75,7 +75,8 @@ public final class D3Dependencies implements Dependencies {
             jsonMethod.add("type", "method");
             jsonMethod.add("class", objectFqn);
             jsonMethod.add("ownerclass", ownerClass());
-            jsonMethod.add("name", methodName);
+            jsonMethod.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
+            jsonMethod.add("name", methodName+"()");
             nodes.add(jsonMethod);
             return new Dependencies.Method() {
                @Override
@@ -108,6 +109,7 @@ public final class D3Dependencies implements Dependencies {
             jsonField.add("type", "field");
             jsonField.add("name", fieldName);
             jsonField.add("ownerclass", ownerClass());
+            jsonField.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
             nodes.add(jsonField);
          }
 

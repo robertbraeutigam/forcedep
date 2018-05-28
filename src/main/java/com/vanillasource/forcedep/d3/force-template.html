@@ -59,6 +59,17 @@
             display: block;
          }
 
+         svg text.classname {
+            font-size: 14px;
+            font-family: Sans-Serif;
+         }
+
+         svg text.membername {
+            font-size: 16px;
+            font-family: Sans-Serif;
+            font-weight: bold;
+         }
+
          .noselect {
            -webkit-touch-callout: none !important; /* iOS Safari */
              -webkit-user-select: none !important; /* Safari */
@@ -149,9 +160,6 @@
                      .on("drag", dragged)
                      .on("end", dragended));
 
-            node.append("title")
-               .text(function(d) { return d.id; });
-
             simulation
                .nodes(nodes)
                .on("tick", ticked);
@@ -216,6 +224,18 @@
                .transition()
                .duration(750)
                .attr("r", 7);
+
+           svg.append("text")
+               .attr("class", "classname")
+               .attr("x", function() { return d.x + 15; })
+               .attr("y", function() { return d.y + 15; })
+               .text(d.ownersimpleclass);
+
+           svg.append("text")
+               .attr("class", "membername")
+               .attr("x", function() { return d.x + 15; })
+               .attr("y", function() { return d.y - 5; })
+               .text(d.name);
          }
 
          function nodeMouseOut(d, i) {
@@ -225,6 +245,12 @@
                .attr("r", 5)
                .attr("stroke", function(d) { return color(d.ownerclass); })
                .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } });
+
+            svg.selectAll("text")
+               .remove();
+
+            svg.selectAll("rect")
+               .remove();
          }
 
          document.onkeydown = function (e) {
