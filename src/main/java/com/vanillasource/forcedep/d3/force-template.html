@@ -5,9 +5,7 @@
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
       <style>
          .links line {
-           stroke: #999;
-           stroke-width: 1;
-           stroke-opacity: 0.6;
+           stroke: black;
            marker-end: url(#arrowhead);
          }
 
@@ -94,7 +92,7 @@
 			<div class="analysis">
 				<svg width="1024" height="768">
 					<defs>
-                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerWidth="5" markerHeight="5" orient="auto">
+                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerUnits="userSpaceOnUse" markerWidth="5" markerHeight="5" orient="auto">
                   <path d="M0,-5L10,0L0,5"></path>
                   </marker>
 					</defs>
@@ -143,7 +141,8 @@
                .attr("class", "links")
                .selectAll("line")
                .data(links)
-                  .enter().append("line")
+               .enter().append("line")
+                  .attr("stroke-opacity", 0.4);
 
             node = svg.append("g")
                .attr("class", "nodes")
@@ -219,6 +218,19 @@
                .attr("stroke", function(d) { return "#aaa"; })
                .attr("fill", function(d) { if (d.type === "method") { return "#aaa"; } else { return "#fff"; } });
 
+            svg.selectAll("line")
+               .filter(function(l) { return l.target === d; })
+               .transition()
+               .duration(750)
+               .attr("stroke-opacity", "1")
+               .attr("stroke-width", 2.5);
+
+            svg.selectAll("line")
+               .filter(function(l) { return l.target !== d; })
+               .transition()
+               .duration(750)
+               .attr("stroke-opacity", 0.2);
+
             svg.selectAll("circle")
                .filter(function(c) { return d.ownerclass === c.ownerclass; })
                .transition()
@@ -245,6 +257,12 @@
                .attr("r", 5)
                .attr("stroke", function(d) { return color(d.ownerclass); })
                .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } });
+
+            svg.selectAll("line")
+               .transition()
+               .duration(500)
+               .attr("stroke-width", 1)
+               .attr("stroke-opacity", "0.4");
 
             svg.selectAll("text")
                .remove();
