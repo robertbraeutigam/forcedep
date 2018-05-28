@@ -114,14 +114,14 @@
              link = null,
              node = null;
 
+         var color = d3.scaleOrdinal(d3.schemeCategory20);
+
          var initSimulation = function() {
             if (simulation) {
                simulation.stop();
             }
             svg.selectAll('g').remove();
             nodes.forEach(function (n) { n.x=null; n.y=null; });
-
-            var color = d3.scaleOrdinal(d3.schemeCategory20);
 
             simulation = d3.forceSimulation()
                .force("link", d3.forceLink().id(function(d) { return d.id; }))
@@ -142,6 +142,8 @@
                   .attr("r", 5)
                   .attr("stroke", function(d) { return color(d.ownerclass); })
                   .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } })
+                  .on("mouseover", nodeMouseOver)
+                  .on("mouseout", nodeMouseOut)
                   .call(d3.drag()
                      .on("start", dragstarted)
                      .on("drag", dragged)
@@ -199,6 +201,30 @@
                simulation.restart();
                b.className = "button fas fa-pause";
             }
+         }
+
+         function nodeMouseOver(d, i) {
+            svg.selectAll("circle")
+               .filter(function(c) { return d.ownerclass !== c.ownerclass; })
+               .transition()
+               .duration(750)
+               .attr("stroke", function(d) { return "#aaa"; })
+               .attr("fill", function(d) { if (d.type === "method") { return "#aaa"; } else { return "#fff"; } });
+
+            svg.selectAll("circle")
+               .filter(function(c) { return d.ownerclass === c.ownerclass; })
+               .transition()
+               .duration(750)
+               .attr("r", 7);
+         }
+
+         function nodeMouseOut(d, i) {
+            svg.selectAll("circle")
+               .transition()
+               .duration(500)
+               .attr("r", 5)
+               .attr("stroke", function(d) { return color(d.ownerclass); })
+               .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } });
          }
 
          document.onkeydown = function (e) {
