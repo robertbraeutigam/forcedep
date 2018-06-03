@@ -28,11 +28,7 @@ import com.vanillasource.forcedep.Dependencies;
 import com.vanillasource.forcedep.jvm.AsmClass;
 import com.vanillasource.forcedep.scan.JarObjects;
 import com.vanillasource.forcedep.scan.AggregateObjects;
-import com.vanillasource.forcedep.transform.ExistingObjectsDependencies;
-import com.vanillasource.forcedep.transform.OverrideDependencies;
-import com.vanillasource.forcedep.transform.MergedPrivateMethodsDependencies;
-import com.vanillasource.forcedep.transform.MergedAnonymousClassesDependencies;
-import com.vanillasource.forcedep.transform.FilteredDependencies;
+import com.vanillasource.forcedep.transform.*;
 import com.vanillasource.forcedep.d3.D3Dependencies;
 import java.util.List;
 import static java.util.Arrays.asList;
@@ -62,12 +58,13 @@ public final class Main {
             .collect(Collectors.toList()));
 
       try (Dependencies dependencies =
-            new FilteredDependencies(whitelist, blacklist,
-               new OverrideDependencies(
-                  new ExistingObjectsDependencies(
-                     new MergedAnonymousClassesDependencies(
-                        new MergedPrivateMethodsDependencies(
-                           new D3Dependencies(analysisName, new File(outputFileName)))))))) {
+            new UniqueDependencies(
+               new FilteredDependencies(whitelist, blacklist,
+                  new OverrideDependencies(
+                     new ExistingObjectsDependencies(
+                        new MergedAnonymousClassesDependencies(
+                           new MergedPrivateMethodsDependencies(
+                              new D3Dependencies(analysisName, new File(outputFileName))))))))) {
          objects.analyze(dependencies);
       }
    }
