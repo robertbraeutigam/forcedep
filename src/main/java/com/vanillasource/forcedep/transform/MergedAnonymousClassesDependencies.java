@@ -45,18 +45,18 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
    }
 
    @Override
-   public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
+   public Dependencies.Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       if (local) {
-         return localObject(objectFqn, superObjectFqns);
+         return localObject(objectFqn, pureInterface, superObjectFqns);
       } else {
-         return topObject(objectFqn, superObjectFqns);
+         return topObject(objectFqn, pureInterface, superObjectFqns);
       }
    }
 
    /**
     * All method calls for local objects will be merged to the instantiation method.
     */
-   private Dependencies.Object localObject(String objectFqn, String... superObjectFqns) {
+   private Dependencies.Object localObject(String objectFqn, boolean pureInterface, String... superObjectFqns) {
       List<Consumer<Dependencies.Method>> localObjectDependencies =
          localObjects.computeIfAbsent(objectFqn, k -> new ArrayList<>());
       return new Dependencies.Object() {
@@ -103,7 +103,7 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
       };
    }
 
-   private Dependencies.Object topObject(String objectFqn, String... superObjectFqns) {
+   private Dependencies.Object topObject(String objectFqn, boolean pureInterface, String... superObjectFqns) {
       return new Dependencies.Object() {
          private final List<Consumer<Dependencies.Object>> members = new ArrayList<>();
 
@@ -172,7 +172,7 @@ public final class MergedAnonymousClassesDependencies implements Dependencies {
          @Override
          public void close() {
             topObjects.add(() -> {
-               try (Dependencies.Object object = delegate.object(objectFqn, false, superObjectFqns)) {
+               try (Dependencies.Object object = delegate.object(objectFqn, false, pureInterface, superObjectFqns)) {
                   members.forEach(m -> m.accept(object));
                }
             });

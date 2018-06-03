@@ -31,14 +31,14 @@ public class MergedAnonymousClassesDependenciesTests {
    private MergedAnonymousClassesDependencies dependencies;
 
    public void testObjectsIsDelegated() {
-      dependencies.object("a.B", false, new String[] {}).close();
+      dependencies.object("a.B", false, false, new String[] {}).close();
       dependencies.close();
 
-      verify(delegate).object("a.B", false, new String[] {});
+      verify(delegate).object("a.B", false, false, new String[] {});
    }
 
    public void testMethodsAreDelegated() {
-      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, false, new String[] {});
       object.method("c", false).close();
       object.close();
       dependencies.close();
@@ -47,7 +47,7 @@ public class MergedAnonymousClassesDependenciesTests {
    }
 
    public void testMethodCallsAreDelegated() {
-      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, false, new String[] {});
       Dependencies.Method method = object.method("c", false);
       method.call("d.E", "f");
       method.close();
@@ -58,7 +58,7 @@ public class MergedAnonymousClassesDependenciesTests {
    }
 
    public void testAnonymousClassesAreNotDelegated() {
-      dependencies.object("a.B$1", true, new String[] {}).close();
+      dependencies.object("a.B$1", true, false, new String[] {}).close();
       dependencies.close();
 
       verify(delegate).close();
@@ -66,13 +66,13 @@ public class MergedAnonymousClassesDependenciesTests {
    }
 
    public void testMethodCallOnAnonymousMethodIsMergedToOwner() {
-      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, false, new String[] {});
       Dependencies.Method method = object.method("c", false);
       method.call("a.B$1", "<init>");
       method.close();
       object.close();
 
-      Dependencies.Object object2 = dependencies.object("a.B$1", true, new String[] {});
+      Dependencies.Object object2 = dependencies.object("a.B$1", true, false, new String[] {});
       Dependencies.Method method2 = object.method("f", false);
       method2.call("d.E", "g");
       method2.close();
@@ -84,13 +84,13 @@ public class MergedAnonymousClassesDependenciesTests {
    }
 
    public void testInstantiatonOfAnonymousClassIsNotVisible() {
-      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, false, new String[] {});
       Dependencies.Method method = object.method("c", false);
       method.call("a.B$1", "<init>");
       method.close();
       object.close();
 
-      Dependencies.Object object2 = dependencies.object("a.B$1", true, new String[] {});
+      Dependencies.Object object2 = dependencies.object("a.B$1", true, false, new String[] {});
       Dependencies.Method method2 = object.method("f", false);
       method2.call("d.E", "g");
       method2.close();
@@ -102,19 +102,19 @@ public class MergedAnonymousClassesDependenciesTests {
    }
 
    public void testTransitiveMethodCallOnAnonymousMethodIsMergedToOwner() {
-      Dependencies.Object object = dependencies.object("a.B", false, new String[] {});
+      Dependencies.Object object = dependencies.object("a.B", false, false, new String[] {});
       Dependencies.Method method = object.method("c", false);
       method.call("a.B$1", "<init>");
       method.close();
       object.close();
 
-      Dependencies.Object object2 = dependencies.object("a.B$1", true, new String[] {});
+      Dependencies.Object object2 = dependencies.object("a.B$1", true, false, new String[] {});
       Dependencies.Method method2 = object.method("f", false);
       method2.call("a.B$1$1", "<init>");
       method2.close();
       object2.close();
 
-      Dependencies.Object object3 = dependencies.object("a.B$1$1", true, new String[] {});
+      Dependencies.Object object3 = dependencies.object("a.B$1$1", true, false, new String[] {});
       Dependencies.Method method3 = object.method("f", false);
       method3.call("d.E", "g");
       method3.close();
@@ -130,7 +130,7 @@ public class MergedAnonymousClassesDependenciesTests {
    protected void setUp() {
       delegate = mock(Dependencies.class);
       delegateObject = mock(Dependencies.Object.class);
-      when(delegate.object(anyString(), anyBoolean(), anyVararg())).thenReturn(delegateObject);
+      when(delegate.object(anyString(), anyBoolean(), anyBoolean(), anyVararg())).thenReturn(delegateObject);
       delegateMethod = mock(Dependencies.Method.class);
       when(delegateObject.method(anyString(), anyBoolean())).thenReturn(delegateMethod);
       dependencies = new MergedAnonymousClassesDependencies(delegate);

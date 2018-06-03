@@ -26,8 +26,9 @@ public interface Dependencies extends AutoCloseable {
     * @param local Object is only locally usable inside another object. May mean
     * it is an anonymous inner class, defined in a specific method, or a private class
     * only instantiated inside an outer class.
+    * @param pureInterface If the object is an interface, without any implementation.
     */
-   Object object(String objectFqn, boolean local, String... superObjectFqns);
+   Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns);
 
    @Override
    void close();

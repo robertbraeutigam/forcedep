@@ -41,9 +41,9 @@ public final class FilteredDependencies implements Dependencies {
    }
 
    @Override
-   public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
+   public Dependencies.Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       if (onWhitelist(objectFqn) && !onBlacklist(objectFqn)) {
-         return delegatingObject(objectFqn, local, superObjectFqns);
+         return delegatingObject(objectFqn, local, pureInterface, superObjectFqns);
       } else {
          return NULL_OBJECT;
       }
@@ -62,9 +62,9 @@ public final class FilteredDependencies implements Dependencies {
          .anyMatch(r -> objectFqn.matches(r));
    }
 
-   private Dependencies.Object delegatingObject(String objectFqn, boolean local, String... superObjectFqns) {
+   private Dependencies.Object delegatingObject(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       return new Dependencies.Object() {
-         private final Dependencies.Object object = delegate.object(objectFqn, local, superObjectFqns);
+         private final Dependencies.Object object = delegate.object(objectFqn, local, pureInterface, superObjectFqns);
 
          @Override
          public Dependencies.Method method(String methodName, boolean local) {

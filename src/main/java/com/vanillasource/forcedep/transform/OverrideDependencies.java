@@ -43,9 +43,9 @@ public final class OverrideDependencies implements Dependencies {
    }
 
    @Override
-   public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
+   public Dependencies.Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       return new AnalyzedObject() {
-         private final Dependencies.Object object = delegate.object(objectFqn, local, superObjectFqns);
+         private final Dependencies.Object object = delegate.object(objectFqn, local, pureInterface, superObjectFqns);
          private final Set<String> methods = new HashSet<>();
 
          @Override

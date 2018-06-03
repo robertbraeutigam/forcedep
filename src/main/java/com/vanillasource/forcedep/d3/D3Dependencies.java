@@ -64,7 +64,7 @@ public final class D3Dependencies implements Dependencies {
    }
 
    @Override
-   public Dependencies.Object object(String objectFqn, boolean local, String... superObjectFqns) {
+   public Dependencies.Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       classCount++;
       return new Dependencies.Object() {
          @Override

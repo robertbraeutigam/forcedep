@@ -60,6 +60,7 @@ public final class AsmClass implements Objects {
       private String objectFqn;
       private String[] superObjectFqns;
       private boolean anonymous = false;
+      private boolean pureInterface;
       private Dependencies.Object cachedObject;
       private Set<String> fields = new HashSet<>();
 
@@ -78,13 +79,14 @@ public final class AsmClass implements Objects {
          for (String interfaceName: interfaces) {
             superObjectFqns.add(fqn(interfaceName));
          }
+         this.pureInterface = (access & Opcodes.ACC_INTERFACE) != 0;
          this.objectFqn = fqn(name);
          this.superObjectFqns = superObjectFqns.toArray(new String[] {});
       }
 
       private Dependencies.Object object() {
          if (cachedObject == null) {
-            this.cachedObject = dependencies.object(objectFqn, anonymous, superObjectFqns);
+            this.cachedObject = dependencies.object(objectFqn, anonymous, pureInterface, superObjectFqns);
          }
          return cachedObject;
       }

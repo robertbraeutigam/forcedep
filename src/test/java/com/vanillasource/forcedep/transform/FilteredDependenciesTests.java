@@ -34,40 +34,40 @@ public class FilteredDependenciesTests {
    public void testEmptyFilterDoesNotDelegateAnything() {
       dependencies = new FilteredDependencies(asList(), asList(), delegate);
 
-      dependencies.object("a.B", false, new String[] {});
+      dependencies.object("a.B", false, false, new String[] {});
 
-      verify(delegate, never()).object("a.B", false, new String[] {});
+      verify(delegate, never()).object("a.B", false, false, new String[] {});
    }
 
    public void testObjectsIsDelegatedIfOnWhitelist() {
       dependencies = new FilteredDependencies(asList("a.B"), asList(), delegate);
 
-      dependencies.object("a.B", false, new String[] {});
+      dependencies.object("a.B", false, false, new String[] {});
 
-      verify(delegate).object("a.B", false, new String[] {});
+      verify(delegate).object("a.B", false, false, new String[] {});
    }
 
    public void testObjectsIsDelegatedIfOnWhitelistAsRegexp() {
       dependencies = new FilteredDependencies(asList(".*"), asList(), delegate);
 
-      dependencies.object("a.B", false, new String[] {});
+      dependencies.object("a.B", false, false, new String[] {});
 
-      verify(delegate).object("a.B", false, new String[] {});
+      verify(delegate).object("a.B", false, false, new String[] {});
    }
 
    public void testObjectsIsNotDelegatedIfOnWhitelistButAlsoOnBlacklist() {
       dependencies = new FilteredDependencies(asList(".*"), asList("a.B"), delegate);
 
-      dependencies.object("a.B", false, new String[] {});
+      dependencies.object("a.B", false, false, new String[] {});
 
-      verify(delegate, never()).object("a.B", false, new String[] {});
+      verify(delegate, never()).object("a.B", false, false, new String[] {});
    }
 
    @BeforeMethod
    protected void setUp() {
       delegate = mock(Dependencies.class);
       delegateObject = mock(Dependencies.Object.class);
-      when(delegate.object(anyString(), anyBoolean(), anyVararg())).thenReturn(delegateObject);
+      when(delegate.object(anyString(), anyBoolean(), anyBoolean(), anyVararg())).thenReturn(delegateObject);
       delegateMethod = mock(Dependencies.Method.class);
       when(delegateObject.method(anyString(), anyBoolean())).thenReturn(delegateMethod);
    }
