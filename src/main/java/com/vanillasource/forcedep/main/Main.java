@@ -58,12 +58,12 @@ public final class Main {
             .collect(Collectors.toList()));
 
       try (Dependencies dependencies =
-            new UniqueDependencies(
-               new FilteredDependencies(whitelist, blacklist,
-                  new OverrideDependencies(
-                     new ExistingObjectsDependencies(
-                        new MergedAnonymousClassesDependencies(
-                           new MergedPrivateMethodsDependencies(
+            new FilteredDependencies(whitelist, blacklist,
+               new OverrideDependencies(
+                  new ExistingObjectsDependencies(
+                     new MergedAnonymousClassesDependencies(
+                        new MergedPrivateMethodsDependencies(
+                           new UniqueDependencies(
                               new D3Dependencies(analysisName, new File(outputFileName))))))))) {
          objects.analyze(dependencies);
       }
