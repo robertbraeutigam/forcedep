@@ -63,8 +63,9 @@ public final class Main {
                   new ExistingObjectsDependencies(
                      new MergedAnonymousClassesDependencies(
                         new MergedPrivateMethodsDependencies(
-                           new UniqueDependencies(
-                              new D3Dependencies(analysisName, new File(outputFileName))))))))) {
+                           new MergedLambdaDependencies(
+                              new UniqueDependencies(
+                                 new D3Dependencies(analysisName, new File(outputFileName)))))))))) {
          objects.analyze(dependencies);
       }
    }
