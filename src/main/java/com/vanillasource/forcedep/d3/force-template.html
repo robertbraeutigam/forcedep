@@ -150,8 +150,8 @@
                .data(nodes)
                .enter().append("circle")
                   .attr("r", 5)
-                  .attr("stroke", function(d) { return color(d.ownerclass); })
-                  .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } })
+                  .attr("stroke", function(d) { return objectColor(d); })
+                  .attr("fill", function(d) { return fillColor(d); })
                   .on("mouseover", nodeMouseOver)
                   .on("mouseout", nodeMouseOut)
                   .call(d3.drag()
@@ -168,6 +168,18 @@
          }
 
          initSimulation();
+
+         function fillColor(d) {
+            if (d.type === "field") {
+               return "#fff";
+            } else {
+               return objectColor(d);
+            }
+         }
+
+         function objectColor(d) {
+            return color(d.ownerclass);
+         }
 
          function ticked() {
             link
@@ -215,8 +227,8 @@
                .transition()
                .duration(750)
                .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return 7; } else { return 5; }})
-               .attr("stroke", function(c) { if (d.ownerclass === c.ownerclass) { return color(c.ownerclass); } else { return "#ccc"; }})
-               .attr("fill", function(c) { if (c.type === "method") { if (d.ownerclass === c.ownerclass) { return color(c.ownerclass); } else { return "#ccc"; } } else { return "#fff"; } });
+               .attr("stroke", function(c) { if (d.ownerclass === c.ownerclass) { return objectColor(c); } else { return "#ccc"; }})
+               .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { return "#ccc"; }});
 
             svg.selectAll("line")
                .filter(function(l) { return l.target === d; })
@@ -249,8 +261,8 @@
                .transition()
                .duration(500)
                .attr("r", 5)
-               .attr("stroke", function(d) { return color(d.ownerclass); })
-               .attr("fill", function(d) { if (d.type === "method") { return color(d.ownerclass); } else { return "#fff"; } });
+               .attr("stroke", function(d) { return objectColor(d); })
+               .attr("fill", function(d) { return fillColor(d); })
 
             svg.selectAll("line")
                .transition()
