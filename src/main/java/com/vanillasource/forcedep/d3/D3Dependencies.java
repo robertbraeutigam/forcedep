@@ -37,13 +37,15 @@ public final class D3Dependencies implements Dependencies {
    private final JsonArray links = new JsonArray();
    private final String analysisName;
    private final File outputFile;
+   private final boolean active;
    private int classCount = 0;
    private int methodCount = 0;
    private int fieldCount = 0;
 
-   public D3Dependencies(String analysisName, File outputFile) {
+   public D3Dependencies(String analysisName, File outputFile, boolean active) {
       this.analysisName = analysisName;
       this.outputFile = outputFile;
+      this.active = active;
    }
 
    @Override
@@ -54,6 +56,7 @@ public final class D3Dependencies implements Dependencies {
             JtwigModel model = JtwigModel.newModel()
                .with("analysisName", analysisName)
                .with("analysisStatistics", String.format("Classes: %d, Methods %d, Fields: %d", classCount, methodCount, fieldCount))
+               .with("active", active?1:0)
                .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
                .with("links", links.toString(WriterConfig.PRETTY_PRINT));
             template.render(model, output);

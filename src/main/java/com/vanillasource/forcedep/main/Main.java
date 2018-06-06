@@ -38,13 +38,15 @@ import java.io.File;
 public final class Main {
    private final String analysisName;
    private final String outputFileName;
+   private final boolean active;
    private final List<String> inputFileNames;
    private final List<String> whitelist;
    private final List<String> blacklist;
 
-   public Main(String analysisName, String outputFileName, List<String> inputFileNames, List<String> whitelist, List<String> blacklist) {
+   public Main(String analysisName, String outputFileName, boolean active, List<String> inputFileNames, List<String> whitelist, List<String> blacklist) {
       this.outputFileName = outputFileName;
       this.inputFileNames = inputFileNames;
+      this.active = active;
       this.analysisName = analysisName;
       this.whitelist = whitelist;
       this.blacklist = blacklist;
@@ -65,7 +67,7 @@ public final class Main {
                         new MergedPrivateMethodsDependencies(
                            new MergedLambdaDependencies(
                               new UniqueDependencies(
-                                 new D3Dependencies(analysisName, new File(outputFileName)))))))))) {
+                                 new D3Dependencies(analysisName, new File(outputFileName), active))))))))) {
          objects.analyze(dependencies);
       }
    }
@@ -76,11 +78,13 @@ public final class Main {
       options.addOption(Option.builder("n").longOpt("name").hasArg().argName("NAME").desc("The analysis name reported on resulting HTML").build());
       options.addOption(Option.builder("w").longOpt("whitelist").hasArg().argName("REGEXP").desc("Whitelist to filter object FQNs").build());
       options.addOption(Option.builder("b").longOpt("blacklist").hasArg().argName("REGEXP").desc("Blacklist to filter object FQNs").build());
+      options.addOption(Option.builder("s").desc("Initialized simulation in stopped state").build());
       CommandLineParser parser = new DefaultParser();
       CommandLine cmdLine = parser.parse(options, args);
       new Main(
             cmdLine.getOptionValue('n', generateAnalysisName(cmdLine.getArgList())),
             cmdLine.getOptionValue('o', "output.html"),
+            !cmdLine.hasOption('s'),
             cmdLine.getArgList(),
             cmdLine.getOptionValues('w')==null?asList(".*"):asList(cmdLine.getOptionValues('w')),
             cmdLine.getOptionValues('b')==null?asList():asList(cmdLine.getOptionValues('b')))

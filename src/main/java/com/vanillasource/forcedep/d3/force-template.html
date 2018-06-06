@@ -113,7 +113,7 @@
 
          var links = {{ links }};
 
-         var active = 1;
+         var active = {{ active }};
 
          var svg = d3.select("svg"),
             width = +svg.attr("width"),
@@ -136,6 +136,10 @@
                .force("link", d3.forceLink().id(function(d) { return d.id; }))
                .force("charge", d3.forceManyBody())
                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            if (!active) {
+               simulation.stop();
+            }
 
             link = svg.append("g")
                .attr("class", "links")
@@ -231,14 +235,14 @@
                .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { return "#ccc"; }});
 
             svg.selectAll("line")
-               .filter(function(l) { return l.target === d; })
+               .filter(function(l) { return l.source === d; })
                .transition()
                .duration(750)
                .attr("stroke-opacity", "1")
                .attr("stroke-width", 2.5);
 
             svg.selectAll("line")
-               .filter(function(l) { return l.target !== d; })
+               .filter(function(l) { return l.source !== d; })
                .transition()
                .duration(750)
                .attr("stroke-opacity", 0.2);
