@@ -130,16 +130,12 @@
                simulation.stop();
             }
             svg.selectAll('g').remove();
-            nodes.forEach(function (n) { n.x=null; n.y=null; });
+            nodes.forEach(function (n) { n.x=n.initialX; n.y=n.initialY; });
 
             simulation = d3.forceSimulation()
                .force("link", d3.forceLink().id(function(d) { return d.id; }))
                .force("charge", d3.forceManyBody())
                .force("center", d3.forceCenter(width / 2, height / 2));
-
-            if (!active) {
-               simulation.stop();
-            }
 
             link = svg.append("g")
                .attr("class", "links")
@@ -169,6 +165,11 @@
 
             simulation.force("link")
                .links(links);
+
+            if (!active) {
+               ticked();
+               simulation.stop();
+            }
          }
 
          initSimulation();

@@ -38,6 +38,7 @@ public final class D3Dependencies implements Dependencies {
    private final String analysisName;
    private final File outputFile;
    private final boolean active;
+   private final ObjectLayout layout;
    private int classCount = 0;
    private int methodCount = 0;
    private int fieldCount = 0;
@@ -46,6 +47,7 @@ public final class D3Dependencies implements Dependencies {
       this.analysisName = analysisName;
       this.outputFile = outputFile;
       this.active = active;
+      this.layout = new ObjectLayout();
    }
 
    @Override
@@ -80,6 +82,7 @@ public final class D3Dependencies implements Dependencies {
             jsonMethod.add("ownerclass", ownerClass());
             jsonMethod.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
             jsonMethod.add("name", methodName+"()");
+            layout.layoutObject(ownerClass(), jsonMethod);
             nodes.add(jsonMethod);
             return new Dependencies.Method() {
                @Override
@@ -113,6 +116,7 @@ public final class D3Dependencies implements Dependencies {
             jsonField.add("name", fieldName);
             jsonField.add("ownerclass", ownerClass());
             jsonField.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
+            layout.layoutObject(ownerClass(), jsonField);
             nodes.add(jsonField);
          }
 
