@@ -9,6 +9,10 @@
            marker-end: url(#arrowhead);
          }
 
+         line.interface {
+            stroke-dasharray: 5px;
+         }
+
          .nodes circle {
            stroke-width: 1.5px;
          }
@@ -142,7 +146,8 @@
                .selectAll("line")
                .data(links)
                .enter().append("line")
-                  .attr("stroke-opacity", 0.4);
+                  .attr("stroke-opacity", 0.4)
+                  .attr("class", function(l) { if (l.interface) { return "interface"; } else { return ""; }});
 
             node = svg.append("g")
                .attr("class", "nodes")

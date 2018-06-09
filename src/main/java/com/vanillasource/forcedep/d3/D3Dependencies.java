@@ -28,11 +28,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Saves dependencies directly to a D3 graph.
  */
 public final class D3Dependencies implements Dependencies {
+   private final Map<String, CompletableFuture<Boolean>> objectInterface = new HashMap<>();
    private final JsonArray nodes = new JsonArray();
    private final JsonArray links = new JsonArray();
    private final String analysisName;
@@ -71,6 +75,7 @@ public final class D3Dependencies implements Dependencies {
    @Override
    public Dependencies.Object object(String objectFqn, boolean local, boolean pureInterface, String... superObjectFqns) {
       classCount++;
+      objectInterface.computeIfAbsent(objectFqn, k -> new CompletableFuture<>()).complete(pureInterface);
       return new Dependencies.Object() {
          @Override
          public Dependencies.Method method(String methodName, boolean local) {
@@ -79,6 +84,7 @@ public final class D3Dependencies implements Dependencies {
             jsonMethod.add("id", methodId(objectFqn, methodName));
             jsonMethod.add("type", "method");
             jsonMethod.add("class", objectFqn);
+            jsonMethod.add("interface", pureInterface?1:0);
             jsonMethod.add("ownerclass", ownerClass());
             jsonMethod.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
             jsonMethod.add("name", methodName+"()");
@@ -90,6 +96,8 @@ public final class D3Dependencies implements Dependencies {
                   JsonObject jsonCall = new JsonObject();
                   jsonCall.add("source", methodId(objectFqn, methodName));
                   jsonCall.add("target", methodId(calledObjectFqn, calledMethodName));
+                  objectInterface.computeIfAbsent(calledObjectFqn, k -> new CompletableFuture<>())
+                     .thenAccept(calledPureInterface -> jsonCall.add("interface", calledPureInterface));
                   links.add(jsonCall);
                }
 
@@ -113,6 +121,7 @@ public final class D3Dependencies implements Dependencies {
             JsonObject jsonField = new JsonObject();
             jsonField.add("id", fieldId(objectFqn, fieldName));
             jsonField.add("type", "field");
+            jsonField.add("interface", pureInterface?1:0);
             jsonField.add("name", fieldName);
             jsonField.add("ownerclass", ownerClass());
             jsonField.add("ownersimpleclass", ownerClass().substring(ownerClass().lastIndexOf('.')+1));
