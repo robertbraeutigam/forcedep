@@ -18,6 +18,12 @@
            stroke-width: 1.5px;
          }
 
+         .nodes circle.interface {
+            fill: white;
+            stroke-width: 6px; 
+            stroke-dasharray: 3px; 
+         }
+
 			svg {
 				border: 1px solid black;
 				display: block;
@@ -158,6 +164,7 @@
                   .attr("r", 5)
                   .attr("stroke", function(d) { return objectColor(d); })
                   .attr("fill", function(d) { return fillColor(d); })
+                  .attr("class", function(d) { return d.interface?"interface":""; })
                   .on("mouseover", nodeMouseOver)
                   .on("mouseout", nodeMouseOut)
                   .call(d3.drag()
