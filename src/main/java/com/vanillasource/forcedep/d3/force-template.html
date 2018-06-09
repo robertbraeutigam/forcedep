@@ -9,8 +9,9 @@
            marker-end: url(#arrowhead);
          }
 
-         line.interface {
-            stroke-dasharray: 5px;
+         .links line.interface {
+            stroke: gray;
+            stroke-dasharray: 3px;
          }
 
          .nodes circle {
@@ -281,9 +282,6 @@
                .attr("stroke-opacity", "0.4");
 
             svg.selectAll("text")
-               .remove();
-
-            svg.selectAll("rect")
                .remove();
          }
 
