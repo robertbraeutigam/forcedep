@@ -246,7 +246,7 @@
                .duration(750)
                .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return 7; } else { return 5; }})
                .attr("stroke", function(c) { if (d.ownerclass === c.ownerclass) { return objectColor(c); } else { return "#ccc"; }})
-               .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { return "#ccc"; }});
+               .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { if (fillColor(c) === "#fff") { return "#fff"; } else { return "#ccc"; }}});
 
             svg.selectAll("line")
                .filter(function(l) { return l.source === d; })
