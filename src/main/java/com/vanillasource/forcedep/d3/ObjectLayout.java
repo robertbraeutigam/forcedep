@@ -25,7 +25,6 @@ import java.util.HashMap;
 public final class ObjectLayout {
    private final int width = 1024;
    private final int distance = 30;
-   private final int offset = 10;
    private final int objectWidth = 5*distance;
    private final int objectHeight = 5*distance;
    private final int objectsInRow = width / objectWidth;
@@ -48,7 +47,7 @@ public final class ObjectLayout {
 
       public void layout(JsonObject json) {
          int x = 100 + (index % objectsInRow) * objectWidth + (slot % 3) * distance;
-         int y = 100 + (index / objectsInRow) * objectHeight + (slot / 3) * distance + (slot % 3) * offset;
+         int y = 100 + (index / objectsInRow) * objectHeight + (slot / 3) * distance;
          json.add("initialX", x);
          json.add("initialY", y);
          slot++;
