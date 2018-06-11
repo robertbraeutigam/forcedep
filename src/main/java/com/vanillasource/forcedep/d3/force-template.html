@@ -6,7 +6,7 @@
       <style>
          .links line {
            stroke: black;
-           stroke-width: 2px;
+           stroke-width: {{ size / 4 }}px;
            marker-end: url(#arrowhead);
          }
 
@@ -16,12 +16,12 @@
          }
 
          .nodes circle {
-           stroke-width: 3px;
+            stroke-width: {{ size / 3 }}px;
          }
 
          .nodes circle.interface {
             fill: white;
-            stroke-width: 6px; 
+            stroke-width: {{ size * 0.75 }}px; 
             stroke-dasharray: 3px; 
          }
 
@@ -104,8 +104,8 @@
 			<div class="analysis">
 				<svg width="1024" height="768">
 					<defs>
-                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="20" refY="0" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto">
-                  <path d="M0,-5L10,0L0,5"></path>
+                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="20" refY="0" markerUnits="userSpaceOnUse" markerWidth="{{size}}" markerHeight="{{size}}" orient="auto">
+                     <path d="M0,-5L10,0L0,5"></path>
                   </marker>
 					</defs>
             </svg>
@@ -208,8 +208,8 @@
                .attr("y2", function(d) { return d.target.y; });
 
             node
-               .attr("cx", function(d) { return d.x = Math.max(6, Math.min(width - 6, d.x)); })
-               .attr("cy", function(d) { return d.y = Math.max(6, Math.min(height - 6, d.y)); });
+               .attr("cx", function(d) { return d.x = Math.max({{size}}, Math.min(width - {{size}}, d.x)); })
+               .attr("cy", function(d) { return d.y = Math.max({{size}}, Math.min(height - {{size}}, d.y)); });
          }
 
          function dragstarted(d) {
@@ -245,7 +245,7 @@
             svg.selectAll("circle")
                .transition()
                .duration(750)
-               .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return 10; } else { return 8; }})
+               .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return {{size*1.25}}; } else { return {{size}}; }})
                .attr("stroke", function(c) { if (d.ownerclass === c.ownerclass) { return objectColor(c); } else { return "#ccc"; }})
                .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { if (fillColor(c) === "#fff") { return "#fff"; } else { return "#ccc"; }}});
 
@@ -253,8 +253,7 @@
                .filter(function(l) { return l.source === d; })
                .transition()
                .duration(750)
-               .attr("stroke-opacity", "1")
-               .attr("stroke-width", 2.5);
+               .attr("stroke-opacity", "1");
 
             svg.selectAll("line")
                .filter(function(l) { return l.source !== d; })
@@ -279,14 +278,13 @@
             svg.selectAll("circle")
                .transition()
                .duration(500)
-               .attr("r", 8)
+               .attr("r", {{size}})
                .attr("stroke", function(d) { return objectColor(d); })
                .attr("fill", function(d) { return fillColor(d); })
 
             svg.selectAll("line")
                .transition()
                .duration(500)
-               .attr("stroke-width", 1)
                .attr("stroke-opacity", "0.4");
 
             svg.selectAll("text")

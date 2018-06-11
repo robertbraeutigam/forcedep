@@ -63,6 +63,7 @@ public final class D3Dependencies implements Dependencies {
                .with("analysisName", analysisName)
                .with("analysisStatistics", String.format("Classes: %d, Methods %d, Fields: %d", classCount, methodCount, fieldCount))
                .with("active", active?1:0)
+               .with("size", 8)
                .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
                .with("links", links.toString(WriterConfig.PRETTY_PRINT));
             template.render(model, output);
