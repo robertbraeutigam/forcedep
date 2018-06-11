@@ -136,7 +136,7 @@
                <mainClass>com.vanillasource.forcedep.main.Main</mainClass>
                <classpathScope>test</classpathScope>
                <arguments>
-                  <argument>-s</argument>
+                  <argument>-x</argument>
                   <argument>-o</argument>
                   <argument>target/output.html</argument>
                   <argument>-b</argument>

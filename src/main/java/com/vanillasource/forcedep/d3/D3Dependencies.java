@@ -43,15 +43,17 @@ public final class D3Dependencies implements Dependencies {
    private final File outputFile;
    private final boolean active;
    private final ObjectLayout layout;
+   private final int size;
    private int classCount = 0;
    private int methodCount = 0;
    private int fieldCount = 0;
 
-   public D3Dependencies(String analysisName, File outputFile, boolean active) {
+   public D3Dependencies(String analysisName, File outputFile, boolean active, int size) {
       this.analysisName = analysisName;
       this.outputFile = outputFile;
       this.active = active;
       this.layout = new ObjectLayout();
+      this.size = size;
    }
 
    @Override
@@ -63,7 +65,7 @@ public final class D3Dependencies implements Dependencies {
                .with("analysisName", analysisName)
                .with("analysisStatistics", String.format("Classes: %d, Methods %d, Fields: %d", classCount, methodCount, fieldCount))
                .with("active", active?1:0)
-               .with("size", 8)
+               .with("size", size)
                .with("nodes", nodes.toString(WriterConfig.PRETTY_PRINT))
                .with("links", links.toString(WriterConfig.PRETTY_PRINT));
             template.render(model, output);
