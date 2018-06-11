@@ -139,6 +139,10 @@
                   <argument>-x</argument>
                   <argument>-o</argument>
                   <argument>target/output.html</argument>
+                  <!-- <argument>-s</argument>
+                  <argument>24</argument>
+                  <argument>-w</argument>
+                  <argument>com.vanillasource.forcedep.transform.FilteredDependencies</argument> -->
                   <argument>-b</argument>
                   <argument>.*\.Main</argument>
                   <argument>target/${project.build.finalName}.jar</argument>

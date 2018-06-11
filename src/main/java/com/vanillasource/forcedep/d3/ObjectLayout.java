@@ -24,12 +24,21 @@ import java.util.HashMap;
 
 public final class ObjectLayout {
    private final int width = 1024;
-   private final int distance = 30;
-   private final int objectWidth = 5*distance;
-   private final int objectHeight = 5*distance;
-   private final int objectsInRow = width / objectWidth;
+   private final int objectSize;
+   private final int distance;
+   private final int classWidth;
+   private final int classHeight;
+   private final int classesInRow;
    private int nextPositionIndex = 0;
    private Map<String, Position> objectPosition = new HashMap<>();
+
+   public ObjectLayout(int objectSize) {
+      this.objectSize = objectSize;
+      this.distance = objectSize * 30 / 6;
+      this.classWidth = 5 * distance;
+      this.classHeight = 5 * distance;
+      this.classesInRow = width / classWidth;
+   }
 
    public void layoutObject(String objectFqn, JsonObject json) {
       objectPosition
@@ -46,8 +55,8 @@ public final class ObjectLayout {
       }
 
       public void layout(JsonObject json) {
-         int x = 100 + (index % objectsInRow) * objectWidth + (slot % 3) * distance;
-         int y = 100 + (index / objectsInRow) * objectHeight + (slot / 3) * distance;
+         int x = 100 + (index % classesInRow) * classWidth + (slot % 3) * distance;
+         int y = 100 + (index / classesInRow) * classHeight + (slot / 3) * distance;
          json.add("initialX", x);
          json.add("initialY", y);
          slot++;

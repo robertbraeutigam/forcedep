@@ -52,8 +52,8 @@ public final class D3Dependencies implements Dependencies {
       this.analysisName = analysisName;
       this.outputFile = outputFile;
       this.active = active;
-      this.layout = new ObjectLayout();
       this.size = size;
+      this.layout = new ObjectLayout(size);
    }
 
    @Override

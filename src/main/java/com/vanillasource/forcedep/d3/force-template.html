@@ -145,7 +145,10 @@
             nodes.forEach(function (n) { n.x=n.initialX; n.y=n.initialY; });
 
             simulation = d3.forceSimulation()
-               .force("link", d3.forceLink().id(function(d) { return d.id; }))
+               .force("link", d3.forceLink()
+                     .id(function(d) { return d.id; })
+                     .distance(function(d) { return {{size*30/6}} })
+               )
                .force("charge", d3.forceManyBody())
                .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -162,7 +165,7 @@
                .selectAll("circle")
                .data(nodes)
                .enter().append("circle")
-                  .attr("r", 8)
+                  .attr("r", {{size}})
                   .attr("stroke", function(d) { return objectColor(d); })
                   .attr("fill", function(d) { return fillColor(d); })
                   .attr("class", function(d) { return d.interface?"interface":""; })
@@ -263,13 +266,13 @@
 
            svg.append("text")
                .attr("class", "classname")
-               .attr("x", function() { return d.x + 15; })
+               .attr("x", function() { return d.x + 10 + {{size}}; })
                .attr("y", function() { return d.y + 15; })
                .text(d.ownersimpleclass);
 
            svg.append("text")
                .attr("class", "membername")
-               .attr("x", function() { return d.x + 15; })
+               .attr("x", function() { return d.x + 10 + {{size}}; })
                .attr("y", function() { return d.y - 5; })
                .text(d.name);
          }
