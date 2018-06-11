@@ -6,6 +6,7 @@
       <style>
          .links line {
            stroke: black;
+           stroke-width: 2px;
            marker-end: url(#arrowhead);
          }
 
@@ -15,7 +16,7 @@
          }
 
          .nodes circle {
-           stroke-width: 1.5px;
+           stroke-width: 3px;
          }
 
          .nodes circle.interface {
@@ -103,7 +104,7 @@
 			<div class="analysis">
 				<svg width="1024" height="768">
 					<defs>
-                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="21" refY="0" markerUnits="userSpaceOnUse" markerWidth="5" markerHeight="5" orient="auto">
+                  <marker id="arrowhead" viewBox="0 -5 10 10" refX="20" refY="0" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto">
                   <path d="M0,-5L10,0L0,5"></path>
                   </marker>
 					</defs>
@@ -161,7 +162,7 @@
                .selectAll("circle")
                .data(nodes)
                .enter().append("circle")
-                  .attr("r", 5)
+                  .attr("r", 8)
                   .attr("stroke", function(d) { return objectColor(d); })
                   .attr("fill", function(d) { return fillColor(d); })
                   .attr("class", function(d) { return d.interface?"interface":""; })
@@ -244,7 +245,7 @@
             svg.selectAll("circle")
                .transition()
                .duration(750)
-               .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return 7; } else { return 5; }})
+               .attr("r", function(c) { if (d.ownerclass === c.ownerclass) { return 10; } else { return 8; }})
                .attr("stroke", function(c) { if (d.ownerclass === c.ownerclass) { return objectColor(c); } else { return "#ccc"; }})
                .attr("fill", function(c) { if (d.ownerclass === c.ownerclass) { return fillColor(c); } else { if (fillColor(c) === "#fff") { return "#fff"; } else { return "#ccc"; }}});
 
@@ -278,7 +279,7 @@
             svg.selectAll("circle")
                .transition()
                .duration(500)
-               .attr("r", 5)
+               .attr("r", 8)
                .attr("stroke", function(d) { return objectColor(d); })
                .attr("fill", function(d) { return fillColor(d); })
 
